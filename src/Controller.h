@@ -14,30 +14,30 @@
 #include "time.h"
 
 
-typedef enum{
-	initialState = 0,
-	ledOnState   = 1,
-	ledOffState  = 2
-}CONTROLLER;
+enum CONTROLLER {
+	initialState,
+	ledOnState,
+	ledOffState,
+	_END
+};
+const int number_of_states = _END - initialState;
+
 
 class Controller : public Statemachine, public DriverInterface
 {
 private:
 	static STATUS_BLOCK myStatusBlock;
 
-	// States in statemachine
 	static bool _initialState();
 	static bool _ledOnState();
 	static bool _ledOffState();
 
-	// Statemachine ISRs
 	static void _ODD_GPIO_InterruptHandler( uint32_t temp );
 
-	static time baseTime;
-	static time delayTime;
+	static const time baseTime;
+	static const time delayTime;
 
 	static INTERRUPT_CONFIG rtcInterruptConfig;
-	static OUTPUT_32KHZ     rtcOutputConfig;
 
 public:
 	Controller();

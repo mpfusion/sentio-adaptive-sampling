@@ -36,7 +36,6 @@ USER_FLAGS =         \
 	-Wshadow           \
 	-Wswitch-default   \
 	-Wunreachable-code \
-	-DDEBUG_EFM        \
 
 
 ####################################################################
@@ -199,7 +198,7 @@ vpath %.cpp $(CXX_PATHS)
 vpath %.s   $(S_PATHS)
 
 .PHONY: all
-all: $(EXE_DIR)/$(MAINFILE).out $(EXE_DIR)/$(MAINFILE).bin
+all: $(EXE_DIR)/$(MAINFILE).out $(EXE_DIR)/$(MAINFILE).bin flash
 
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)
