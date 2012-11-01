@@ -6,12 +6,21 @@
  */
 
 #include "Controller.h"
+#include "ApplicationConfig.h"
 
 STATUS_BLOCK     Controller::myStatusBlock;
 INTERRUPT_CONFIG Controller::rtcInterruptConfig;
 
-const time Controller::baseTime(0);
-const time Controller::delayTime(1);
+
+CircularBuffer < Controller::secondsPerDay / Controller::minDutyCycle, float > Controller::historicalAverage;
+
+const    float Controller::weightingFactor       = _weightingFactor;
+unsigned int   Controller::adaptiveSlices        = 5;
+unsigned int   Controller::bufferAverageElements = 0;
+float Controller::bufferAverage[secondsPerDay / maxDutyCycle];
+
+const time Controller::baseTime( 0 );
+time Controller::delayTime( 5 );
 
 
 Controller::Controller()
@@ -23,12 +32,136 @@ Controller::Controller()
 	rtcInterruptConfig.enableBatteryBackedSQW = true;
 	rtcInterruptConfig.interruptControl       = true;
 
-	stateDefinition[initialState] = _initialState;
-	stateDefinition[ledOnState]   = _ledOnState;
-	stateDefinition[ledOffState]  = _ledOffState;
+	stateDefinition[initialState]            = _initialState;
+	stateDefinition[doSampling]              = _doSampling;
+	stateDefinition[sampleStorage]           = _sampleStorage;
+	stateDefinition[calculateAdaptiveSlices] = _calculateAdaptiveSlices;
 
 	ISR_Definition[0].function        = _ODD_GPIO_InterruptHandler;
 	ISR_Definition[0].interruptNumber = GPIO_ODD_IRQn;
+}
+
+
+bool Controller::_initialState()
+{
+#ifdef DEBUG
+	debug.initializeInterface( numberOfDebugPinsUsed, numberOfButtonsUsed );
+	debug.initializeDebugUart();
+#endif
+
+	timer.initializeInterface();
+	timer.setBaseTime( baseTime );
+	timer.setInterruptConfig( rtcInterruptConfig );
+	timer.initializeMCU_Interrupt();
+	timer.resetInterrupts();
+	timer.setLowPowerMode();
+
+	humid.initializeInterface();
+
+#ifdef DEBUG
+	sentio.LED_SetOrange();
+	debug.printLine( "\n", true );
+	debug.printLine( "Controller initializing", true );
+#endif
+
+	myStatusBlock.nextState = doSampling;
+
+	return true;
+}
+
+
+float Controller::getTemperature()
+{
+	float shtHum = 0;
+	float shtTmp = 0;
+
+	humid.getMeasurement( shtHum , shtTmp );
+
+	return shtTmp;
+}
+
+
+void Controller::sendData( float value )
+{
+	value++;
+}
+
+
+bool Controller::_doSampling()
+{
+#ifdef DEBUG
+	sentio.LED_SetRed();
+	debug.printLine( "Entered state: doSampling", true );
+#endif
+
+	timer.setAlarmPeriod( delayTime, alarm1, alarmMatchSeconds );
+	timer.resetInterrupts();
+	timer.setLowPowerMode();
+
+	float temperature = getTemperature();
+
+#ifdef DEBUG
+	debug.printLine( "Measured temperature: ", false );
+	debug.printFloat( temperature, 3, true );
+#endif
+
+	bufferAverage[bufferAverageElements] = temperature;
+	++bufferAverageElements;
+
+#ifdef DEBUG
+	debug.printLine( "bufferAverageElements: ", false );
+	debug.printFloat( bufferAverageElements, 2, true );
+	debug.printLine( "adaptiveSlices: ", false );
+	debug.printFloat( adaptiveSlices, 2, true );
+#endif
+
+	myStatusBlock.nextState = doSampling;
+
+	myStatusBlock.sleepMode   = 3;
+	myStatusBlock.wantToSleep = true;
+
+	return true;
+}
+
+
+bool Controller::_sampleStorage()
+{
+#ifdef DEBUG
+	debug.printLine( "Entered state: sampleStorage", true );
+#endif
+
+	float average = 0;
+
+	for ( unsigned int i = 0; i < adaptiveSlices; ++i )
+		average += bufferAverage[i];
+
+	average /= bufferAverageElements;
+
+#ifdef DEBUG
+	debug.printLine( "Average: ", false );
+	debug.printFloat( average, 4, true );
+#endif
+
+	sendData( average );
+
+	bufferAverageElements = 0;
+
+	myStatusBlock.nextState   = calculateAdaptiveSlices;
+	myStatusBlock.wantToSleep = false;
+
+	return true;
+}
+
+
+bool Controller::_calculateAdaptiveSlices()
+{
+#ifdef DEBUG
+	debug.printLine( "Entered state: calculateAdaptiveSlices", true );
+#endif
+
+	myStatusBlock.nextState = doSampling;
+
+	return true;
 }
 
 
@@ -44,103 +177,35 @@ uint8_t Controller::setupApplication()
 }
 
 
-bool Controller::_initialState()
-{
-	debug.initializeInterface( numberOfDebugPinsUsed, numberOfButtonsUsed );
-	debug.initializeDebugUart();
-
-	timer.initializeInterface();
-	timer.setBaseTime( baseTime );
-	timer.setInterruptConfig( rtcInterruptConfig );
-	timer.initializeMCU_Interrupt();
-	timer.resetInterrupts();
-	timer.setLowPowerMode();
-
-	sentio.LED_SetOrange();
-	debug.printLine("Controller starting", true);
-
-	myStatusBlock.nextState = ledOnState;
-
-	return true;
-}
-
-
-bool Controller::_ledOnState()
-{
-	time current;
-	time alarm;
-
-	ALARM_REG_SETTING aux;
-
-	timer.setAlarmPeriod( delayTime, alarm1, alarmMatchSeconds );
-	timer.resetInterrupts();
-	timer.getBaseTime(current);
-	timer.getAlarmTime(alarm, alarm1, aux);
-	timer.setLowPowerMode();
-
-	sentio.LED_SetRed();
-
-	debug.printLine("LED on", false);
-	debug.printTimeDet(current);
-	debug.printTimeDet(alarm);
-	debug.printLine("\n",true);
-
-	myStatusBlock.sleepMode   = 3;
-	myStatusBlock.wantToSleep = true;
-
-	return true;
-}
-
-
-bool Controller::_ledOffState()
-{
-	time current;
-	time alarm;
-
-	ALARM_REG_SETTING aux;
-
-	timer.setAlarmPeriod( delayTime, alarm1, alarmMatchSeconds );
-	timer.resetInterrupts();
-	timer.getBaseTime(current);
-	timer.getAlarmTime(alarm, alarm1, aux);
-	timer.setLowPowerMode();
-
-	sentio.LED_ClearRed();
-
-	debug.printLine("LED off", false);
-	debug.printTimeDet(current);
-	debug.printTimeDet(alarm);
-	debug.printLine("\n",true);
-
-	myStatusBlock.sleepMode   = 3;
-	myStatusBlock.wantToSleep = true;
-
-	return true;
-}
-
-
 void Controller::_ODD_GPIO_InterruptHandler( uint32_t temp )
 {
-	if( temp & maskInterruptRTC_wakeup )
+	if ( temp & maskInterruptRTC_wakeup )
 	{
-		switch( myStatusBlock.nextState )
-		{
-		case initialState:
-			myStatusBlock.nextState = ledOnState;
-			break;
+		if ( bufferAverageElements == adaptiveSlices )
+			myStatusBlock.nextState = sampleStorage;
+		else
+			switch ( myStatusBlock.nextState )
+			{
+			case initialState:
+				myStatusBlock.nextState = doSampling;
+				break;
 
-		case ledOnState:
-			myStatusBlock.nextState = ledOffState;
-			break;
+			case doSampling:
+				myStatusBlock.nextState = doSampling;
+				break;
 
-		case ledOffState:
-			myStatusBlock.nextState = ledOnState;
-			break;
+			case sampleStorage:
+				myStatusBlock.nextState = sampleStorage;
+				break;
 
-		default:
-			myStatusBlock.nextState = initialState;
-		}
+			case calculateAdaptiveSlices:
+				myStatusBlock.nextState = calculateAdaptiveSlices;
+				break;
+
+			default:
+				myStatusBlock.nextState = initialState;
+			}
 	}
 
-	GPIO_IntClear(~0);
+	GPIO_IntClear( ~0 );
 }

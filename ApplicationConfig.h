@@ -8,6 +8,12 @@
 #ifndef APPLICATIONCONFIG_H_
 #define APPLICATIONCONFIG_H_
 
+#define _secondsPerDay         86400
+#define _minDutyCycle          3600
+#define _maxDutyCycle          60
+
+#define _weightingFactor       .5
+
 #define _maxNumberOfElements   10
 #define _maxNumberOfLoadStates 8
 

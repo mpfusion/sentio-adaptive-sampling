@@ -12,15 +12,17 @@
 #include "DriverInterface.h"
 
 #include "time.h"
+#include "ApplicationConfig.h"
+#include "CircularBuffer.h"
 
 
-enum CONTROLLER {
+enum CONTROLLER
+{
 	initialState,
-	ledOnState,
-	ledOffState,
-	_END
+	doSampling,
+	sampleStorage,
+	calculateAdaptiveSlices
 };
-const int number_of_states = _END - initialState;
 
 
 class Controller : public Statemachine, public DriverInterface
@@ -28,20 +30,35 @@ class Controller : public Statemachine, public DriverInterface
 private:
 	static STATUS_BLOCK myStatusBlock;
 
+	static const int secondsPerDay = _secondsPerDay;
+	static const int minDutyCycle  = _minDutyCycle;
+	static const int maxDutyCycle  = _maxDutyCycle;
+
+	static CircularBuffer < secondsPerDay / minDutyCycle, float > historicalAverage;
+	static unsigned int   bufferAverageElements;
+	static          float bufferAverage[];
+
+	static unsigned int   adaptiveSlices;
+	static const    float weightingFactor;
+
 	static bool _initialState();
-	static bool _ledOnState();
-	static bool _ledOffState();
+	static bool _doSampling();
+	static bool _sampleStorage();
+	static bool _calculateAdaptiveSlices();
 
 	static void _ODD_GPIO_InterruptHandler( uint32_t temp );
 
 	static const time baseTime;
-	static const time delayTime;
+	static       time delayTime;
+
+	static float getTemperature();
+	static void  sendData( float value );
 
 	static INTERRUPT_CONFIG rtcInterruptConfig;
 
 public:
 	Controller();
-	~Controller(){}
+	~Controller() {}
 
 	ERROR_CODE executeApplication();
 	uint8_t    setupApplication();
