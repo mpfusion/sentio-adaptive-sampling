@@ -86,18 +86,18 @@ GCCVERSION = $(shell $(CC) -dumpversion)
 # -MMD : Don't generate dependencies on system header files.
 # -MP  : Add phony targets, useful when a h-file is removed from a project.
 # -MF  : Specify a file to write the dependencies to.
-DEPFLAGS =   \
+DEPFLAGS =     \
 	-MMD       \
 	-MP        \
 	-MF        \
 	$(@:.o=.d) \
 
-LIBS +=         \
+LIBS +=           \
 	-lc           \
 	-lcs3         \
 	-lcs3unhosted \
 
-COMMONFLAGS +=                             \
+COMMONFLAGS +=                               \
 	$(USER_FLAGS)                            \
 	-D$(DEVICE)                              \
 	$(DEPFLAGS)                              \
@@ -109,20 +109,20 @@ COMMONFLAGS +=                             \
 	-DUSERCODE_FILENAME=\"$(PROJECTNAME).h\" \
 	-DUSERCODE_CLASSNAME=$(PROJECTNAME)      \
 
-CFLAGS =          \
+CFLAGS =            \
 	$(COMMONFLAGS)  \
 	-fdata-sections \
 	-std=c99        \
 
-CXXFLAGS +=       \
+CXXFLAGS +=         \
 	$(COMMONFLAGS)  \
-$(USERCFLAGS)     \
+$(USERCFLAGS)       \
 	-fno-exceptions \
 	-std=c++98      \
 
 ASFLAGS  += -Ttext 0x0
 
-LDFLAGS +=                                                                       \
+LDFLAGS +=                                                                         \
 	-Xlinker                                                                       \
 	-Map=$(LST_DIR)/main.map                                                       \
 	-mcpu=$(CPU)                                                                   \
@@ -138,7 +138,7 @@ LDFLAGS +=                                                                      
 # Source files                                                     #
 ####################################################################
 
-SYSTEM_C_SRC +=                                                         \
+SYSTEM_C_SRC +=                                                           \
 	$(SYSTEMDIR)/CMSIS/CM3/CoreSupport/efm32lib/src/efm32_assert.c        \
 	$(SYSTEMDIR)/CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32/system_efm32.c \
 	$(SYSTEMDIR)/efm32lib/src/efm32_system.c                              \
@@ -146,12 +146,14 @@ SYSTEM_C_SRC +=                                                         \
 	$(SYSTEMDIR)/efm32lib/src/efm32_cmu.c                                 \
 	$(SYSTEMDIR)/efm32lib/src/efm32_emu.c                                 \
 	$(SYSTEMDIR)/efm32lib/src/efm32_gpio.c                                \
+	$(SYSTEMDIR)/efm32lib/src/efm32_adc.c                                 \
 
-SYSTEM_CXX_SRC +=                                                 \
+SYSTEM_CXX_SRC +=                                                   \
 	$(SYSTEMDIR)/SentioEM3_HAL/time.cpp                             \
 	$(SYSTEMDIR)/SentioEM3_HAL/RTC_DS3234.cpp                       \
 	$(SYSTEMDIR)/SentioEM3_HAL/DebugInterface.cpp                   \
 	$(SYSTEMDIR)/SentioEM3_HAL/System.cpp                           \
+	$(SYSTEMDIR)/SentioEM3_HAL/AnalogInput.cpp                      \
 	$(SYSTEMDIR)/SentioEM3_HAL/SensorExtensions/SHT1X_Sensirion.cpp \
 	$(SYSTEMDIR)/SentioEM3_HAL/SensorExtensions/LTC2990.cpp         \
 	$(SYSTEMDIR)/SystemKernel/Statemachine.cpp                      \
@@ -161,7 +163,7 @@ SYSTEM_CXX_SRC +=                                                 \
 SYSTEM_ASM += \
 	$(SYSTEMDIR)/CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32/startup/cs3/startup_efm32.s
 
-SYSTEMINCLUDEPATHS +=                                    \
+SYSTEMINCLUDEPATHS +=                                      \
 	$(SYSTEMDIR)/CMSIS/CM3/CoreSupport                     \
 	$(SYSTEMDIR)/CMSIS/CM3/DeviceSupport/EnergyMicro/EFM32 \
 	$(SYSTEMDIR)/efm32lib/inc                              \
@@ -170,7 +172,7 @@ SYSTEMINCLUDEPATHS +=                                    \
 	$(SYSTEMDIR)/SystemKernel                              \
 	$(SYSTEMDIR)/efm32lib/src                              \
 
-INCLUDES +=                                                   \
+INCLUDES +=                                                     \
 	$(foreach includedir,$(SYSTEMINCLUDEPATHS),-I$(includedir)) \
 	$(foreach includedir,$(USERINCLUDEPATHS),-I$(includedir))   \
 	-I.                                                         \
@@ -247,7 +249,7 @@ clean:
 	
 .PHONY: flash
 flash:
-	sudo $(FULL_FLASH)                   \
+	sudo $(FULL_FLASH)                     \
 		--verify                           \
 		--mode out                         \
 		--flash $(EXE_DIR)/$(MAINFILE).bin \

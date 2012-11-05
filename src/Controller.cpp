@@ -58,6 +58,8 @@ bool Controller::_initialState()
 
 	humid.initializeInterface();
 
+	luminance.initializeInterface();
+
 #ifdef DEBUG
 	sentio.LED_SetOrange();
 	debug.printLine( "\n", true );
@@ -83,7 +85,11 @@ float Controller::getTemperature()
 
 float Controller::getLuminance()
 {
-	return 0;
+	float lum = 0;
+
+	luminance.readChannel( adcSingleInpCh3, lum );
+
+	return lum;
 }
 
 
@@ -162,8 +168,8 @@ bool Controller::_sampleStorage()
 bool Controller::_calculateAdaptiveSlices()
 {
 	float historicalAverageFirst = historicalAverage.pop_back();
-	float luminance = getLuminance();
-	float histAvg = weightingFactor * historicalAverageFirst + ( 1 - weightingFactor ) * luminance;
+	float lum = getLuminance();
+	float histAvg = weightingFactor * historicalAverageFirst + ( 1 - weightingFactor ) * lum;
 
 	historicalAverage.push_back(histAvg);
 
@@ -173,12 +179,12 @@ bool Controller::_calculateAdaptiveSlices()
 	debug.printLine( "\tweightingFactor: ", false );
 	debug.printFloat( weightingFactor, 4, true );
 	debug.printLine( "\thistoricalAverageFirst: ", false );
-	debug.printFloat( historicalAverageFirst, 4, true );
-	debug.printLine( "\tLuminance: ", false );
-	debug.printFloat( luminance, 4, true );
+	debug.printFloat( historicalAverageFirst, 7, true );
+	debug.printLine( "\tMeasured luminance: ", false );
+	debug.printFloat( lum, 7, true );
 
 	debug.printLine( "\tAdd new historical average value, histAvg: ", false );
-	debug.printFloat( histAvg, 4, true );
+	debug.printFloat( histAvg, 7, true );
 	debug.printLine( "\n", false );
 #endif
 
