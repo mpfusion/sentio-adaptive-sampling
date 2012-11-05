@@ -35,6 +35,7 @@ private:
 	static const int maxDutyCycle  = _maxDutyCycle;
 
 	static CircularBuffer < secondsPerDay / minDutyCycle, float > historicalAverage;
+
 	static unsigned int   bufferAverageElements;
 	static          float bufferAverage[];
 
@@ -52,6 +53,7 @@ private:
 	static       time delayTime;
 
 	static float getTemperature();
+	static float getLuminance();
 	static void  sendData( float value );
 
 	static INTERRUPT_CONFIG rtcInterruptConfig;

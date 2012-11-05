@@ -81,6 +81,12 @@ float Controller::getTemperature()
 }
 
 
+float Controller::getLuminance()
+{
+	return 0;
+}
+
+
 void Controller::sendData( float value )
 {
 	value++;
@@ -101,7 +107,7 @@ bool Controller::_doSampling()
 	float temperature = getTemperature();
 
 #ifdef DEBUG
-	debug.printLine( "Measured temperature: ", false );
+	debug.printLine( "\tMeasured temperature: ", false );
 	debug.printFloat( temperature, 3, true );
 #endif
 
@@ -109,9 +115,9 @@ bool Controller::_doSampling()
 	++bufferAverageElements;
 
 #ifdef DEBUG
-	debug.printLine( "bufferAverageElements: ", false );
-	debug.printFloat( bufferAverageElements, 2, true );
-	debug.printLine( "adaptiveSlices: ", false );
+	debug.printLine( "\tbufferAverageElements: ", false );
+	debug.printFloat( bufferAverageElements, 2, false );
+	debug.printLine( " / ", false );
 	debug.printFloat( adaptiveSlices, 2, true );
 #endif
 
@@ -130,19 +136,19 @@ bool Controller::_sampleStorage()
 	debug.printLine( "Entered state: sampleStorage", true );
 #endif
 
-	float average = 0;
+	float lastAverage = 0;
 
 	for ( unsigned int i = 0; i < adaptiveSlices; ++i )
-		average += bufferAverage[i];
+		lastAverage += bufferAverage[i];
 
-	average /= bufferAverageElements;
+	lastAverage /= bufferAverageElements;
 
 #ifdef DEBUG
-	debug.printLine( "Average: ", false );
-	debug.printFloat( average, 4, true );
+	debug.printLine( "\tlastAverage: ", false );
+	debug.printFloat( lastAverage, 4, true );
 #endif
 
-	sendData( average );
+	sendData( lastAverage );
 
 	bufferAverageElements = 0;
 
@@ -155,8 +161,25 @@ bool Controller::_sampleStorage()
 
 bool Controller::_calculateAdaptiveSlices()
 {
+	float historicalAverageFirst = historicalAverage.pop_back();
+	float luminance = getLuminance();
+	float histAvg = weightingFactor * historicalAverageFirst + ( 1 - weightingFactor ) * luminance;
+
+	historicalAverage.push_back(histAvg);
+
 #ifdef DEBUG
 	debug.printLine( "Entered state: calculateAdaptiveSlices", true );
+
+	debug.printLine( "\tweightingFactor: ", false );
+	debug.printFloat( weightingFactor, 4, true );
+	debug.printLine( "\thistoricalAverageFirst: ", false );
+	debug.printFloat( historicalAverageFirst, 4, true );
+	debug.printLine( "\tLuminance: ", false );
+	debug.printFloat( luminance, 4, true );
+
+	debug.printLine( "\tAdd new historical average value, histAvg: ", false );
+	debug.printFloat( histAvg, 4, true );
+	debug.printLine( "\n", false );
 #endif
 
 	myStatusBlock.nextState = doSampling;
