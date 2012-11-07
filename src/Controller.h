@@ -30,9 +30,13 @@ class Controller : public Statemachine, public DriverInterface
 private:
 	static STATUS_BLOCK myStatusBlock;
 
-	static const int secondsPerDay = _secondsPerDay;
-	static const int minDutyCycle  = _minDutyCycle;
-	static const int maxDutyCycle  = _maxDutyCycle;
+	static const unsigned int   secondsPerDay = _secondsPerDay;
+	static const unsigned int   minDutyCycle  = _minDutyCycle;
+	static const unsigned int   maxDutyCycle  = _maxDutyCycle;
+	static const          float luminanceVoltageSquareMetrePerWatt;
+	static const          float panelArea;
+	static const          float energyPerSamplingCycle;
+	static const          float energyPerStorageCycle;
 
 	static CircularBuffer < secondsPerDay / minDutyCycle, float > historicalAverage;
 

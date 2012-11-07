@@ -14,10 +14,14 @@ INTERRUPT_CONFIG Controller::rtcInterruptConfig;
 
 CircularBuffer < Controller::secondsPerDay / Controller::minDutyCycle, float > Controller::historicalAverage;
 
+const    float Controller::energyPerSamplingCycle( _energyPerSamplingCycle );
+const    float Controller::energyPerStorageCycle( _energyPerStorageCycle );
+const    float Controller::luminanceVoltageSquareMetrePerWatt( _luminanceVoltageSquareMetrePerWatt );
+const    float Controller::panelArea( _panelArea );
 const    float Controller::weightingFactor       = _weightingFactor;
-unsigned int   Controller::adaptiveSlices        = 5;
+unsigned int   Controller::adaptiveSlices        = 3;
 unsigned int   Controller::bufferAverageElements = 0;
-float Controller::bufferAverage[secondsPerDay / maxDutyCycle];
+float          Controller::bufferAverage[secondsPerDay / maxDutyCycle];
 
 const time Controller::baseTime( 0 );
 time Controller::delayTime( 5 );
@@ -66,6 +70,9 @@ bool Controller::_initialState()
 	debug.printLine( "Controller initializing", true );
 #endif
 
+	for (unsigned int i = 0; i < historicalAverage.size(); ++i)
+		historicalAverage.push_back( getLuminance() );
+
 	myStatusBlock.nextState = doSampling;
 
 	return true;
@@ -89,7 +96,8 @@ float Controller::getLuminance()
 
 	luminance.readChannel( adcSingleInpCh3, lum );
 
-	return lum;
+	// current radiation energy in Joule
+	return panelArea * minDutyCycle * lum / luminanceVoltageSquareMetrePerWatt;
 }
 
 
@@ -168,10 +176,30 @@ bool Controller::_sampleStorage()
 bool Controller::_calculateAdaptiveSlices()
 {
 	float historicalAverageFirst = historicalAverage.pop_back();
-	float lum = getLuminance();
-	float histAvg = weightingFactor * historicalAverageFirst + ( 1 - weightingFactor ) * lum;
+	float lum                    = getLuminance();
+	float histAvg                = weightingFactor * historicalAverageFirst + ( 1 - weightingFactor ) * lum;
+	float expectedAveragePerDay  = 0;
 
-	historicalAverage.push_back(histAvg);
+	float expectedAveragePerSlot;
+	float energySurplus;
+	float remainingEnergy;
+	int   sliceCorrection;
+	int   uncorrectedSliceNumber;
+
+	unsigned int numberOfSlices;
+
+	historicalAverage.push_back( histAvg );
+
+	for ( unsigned int i = 0; i < historicalAverage.size(); ++i )
+		expectedAveragePerDay += historicalAverageFirst;
+
+	expectedAveragePerDay  /= historicalAverage.size();
+	expectedAveragePerSlot  = minDutyCycle * expectedAveragePerDay / secondsPerDay;
+	energySurplus           = lum - historicalAverageFirst;
+	remainingEnergy         = energySurplus - energyPerStorageCycle;
+	sliceCorrection         = static_cast<int>( remainingEnergy / energyPerSamplingCycle );
+	uncorrectedSliceNumber  = ( expectedAveragePerSlot - energyPerStorageCycle ) / energyPerSamplingCycle;
+	numberOfSlices          = uncorrectedSliceNumber + sliceCorrection < 1 ? 1 : uncorrectedSliceNumber + sliceCorrection;
 
 #ifdef DEBUG
 	debug.printLine( "Entered state: calculateAdaptiveSlices", true );
@@ -185,6 +213,21 @@ bool Controller::_calculateAdaptiveSlices()
 
 	debug.printLine( "\tAdd new historical average value, histAvg: ", false );
 	debug.printFloat( histAvg, 7, true );
+
+	debug.printLine( "\tExpected average per day: ", false );
+	debug.printFloat( expectedAveragePerDay, 7, true );
+
+	debug.printLine( "\tExpected average per slot: ", false );
+	debug.printFloat( expectedAveragePerSlot, 7, true );
+
+	debug.printLine( "\tSurplus: ", false );
+	debug.printFloat( lum - historicalAverageFirst, 7, true );
+
+	debug.printLine( "\tsliceCorrection: ", false );
+	debug.printFloat( sliceCorrection, 4, true );
+
+	debug.printLine( "\tnumberOfSlices: ", false );
+	debug.printFloat( numberOfSlices, 4, true );
 	debug.printLine( "\n", false );
 #endif
 

@@ -27,7 +27,7 @@ USER_ASM_SRC =
 # Additional compiler flags for C and C++                          #
 ####################################################################
 
-USER_FLAGS =         \
+USER_FLAGS =           \
 	-Wall              \
 	-Wextra            \
 	-pedantic          \
@@ -155,7 +155,6 @@ SYSTEM_CXX_SRC +=                                                   \
 	$(SYSTEMDIR)/SentioEM3_HAL/System.cpp                           \
 	$(SYSTEMDIR)/SentioEM3_HAL/AnalogInput.cpp                      \
 	$(SYSTEMDIR)/SentioEM3_HAL/SensorExtensions/SHT1X_Sensirion.cpp \
-	$(SYSTEMDIR)/SentioEM3_HAL/SensorExtensions/LTC2990.cpp         \
 	$(SYSTEMDIR)/SystemKernel/Statemachine.cpp                      \
 	$(SYSTEMDIR)/SystemKernel/DriverInterface.cpp                   \
 	$(SYSTEMDIR)/SystemKernel/main.cpp                              \
