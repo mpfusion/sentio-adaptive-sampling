@@ -19,7 +19,7 @@ const    float Controller::energyPerStorageCycle( _energyPerStorageCycle );
 const    float Controller::luminanceVoltageSquareMetrePerWatt( _luminanceVoltageSquareMetrePerWatt );
 const    float Controller::panelArea( _panelArea );
 const    float Controller::weightingFactor       = _weightingFactor;
-unsigned int   Controller::adaptiveSlices        = 3;
+unsigned int   Controller::adaptiveSlices        = 1;
 unsigned int   Controller::bufferAverageElements = 0;
 float          Controller::bufferAverage[secondsPerDay / maxDutyCycle];
 
@@ -135,8 +135,9 @@ bool Controller::_doSampling()
 	debug.printFloat( adaptiveSlices, 2, true );
 #endif
 
-	myStatusBlock.nextState = doSampling;
+	delayTime = minDutyCycle / adaptiveSlices;
 
+	myStatusBlock.nextState   = doSampling;
 	myStatusBlock.sleepMode   = 3;
 	myStatusBlock.wantToSleep = true;
 
@@ -186,8 +187,6 @@ bool Controller::_calculateAdaptiveSlices()
 	int   sliceCorrection;
 	int   uncorrectedSliceNumber;
 
-	unsigned int numberOfSlices;
-
 	historicalAverage.push_back( histAvg );
 
 	for ( unsigned int i = 0; i < historicalAverage.size(); ++i )
@@ -201,11 +200,11 @@ bool Controller::_calculateAdaptiveSlices()
 	uncorrectedSliceNumber  = ( expectedAveragePerSlot - energyPerStorageCycle ) / energyPerSamplingCycle;
 
 	if ( uncorrectedSliceNumber + sliceCorrection < 1 )
-		numberOfSlices = 1;
+		adaptiveSlices = 1;
 	else if ( uncorrectedSliceNumber + sliceCorrection > minDutyCycle / maxDutyCycle )
-		numberOfSlices = minDutyCycle / maxDutyCycle;
+		adaptiveSlices = minDutyCycle / maxDutyCycle;
 	else
-		numberOfSlices = uncorrectedSliceNumber + sliceCorrection;
+		adaptiveSlices = uncorrectedSliceNumber + sliceCorrection;
 
 #ifdef DEBUG
 	debug.printLine( "Entered state: calculateAdaptiveSlices", true );
@@ -237,8 +236,8 @@ bool Controller::_calculateAdaptiveSlices()
 	debug.printLine( "\tsliceCorrection: ", false );
 	debug.printFloat( sliceCorrection, 4, true );
 
-	debug.printLine( "\tnumberOfSlices: ", false );
-	debug.printFloat( numberOfSlices, 4, true );
+	debug.printLine( "\tadaptiveSlices: ", false );
+	debug.printFloat( adaptiveSlices, 4, true );
 	debug.printLine( "\n", false );
 #endif
 
