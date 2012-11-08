@@ -203,7 +203,7 @@ bool Controller::_calculateAdaptiveSlices()
 	if ( uncorrectedSliceNumber + sliceCorrection < 1 )
 		numberOfSlices = 1;
 	else if ( uncorrectedSliceNumber + sliceCorrection > minDutyCycle / maxDutyCycle )
-		numberOfSlices = maxDutyCycle;
+		numberOfSlices = minDutyCycle / maxDutyCycle;
 	else
 		numberOfSlices = uncorrectedSliceNumber + sliceCorrection;
 
@@ -212,8 +212,10 @@ bool Controller::_calculateAdaptiveSlices()
 
 	debug.printLine( "\tweightingFactor: ", false );
 	debug.printFloat( weightingFactor, 4, true );
+
 	debug.printLine( "\thistoricalAverageFirst: ", false );
 	debug.printFloat( historicalAverageFirst, 7, true );
+
 	debug.printLine( "\tMeasured luminance: ", false );
 	debug.printFloat( lum, 7, true );
 
@@ -228,6 +230,9 @@ bool Controller::_calculateAdaptiveSlices()
 
 	debug.printLine( "\tSurplus: ", false );
 	debug.printFloat( lum - historicalAverageFirst, 7, true );
+
+	debug.printLine( "\tuncorrectedSliceNumber: ", false );
+	debug.printFloat( uncorrectedSliceNumber, 4, true );
 
 	debug.printLine( "\tsliceCorrection: ", false );
 	debug.printFloat( sliceCorrection, 4, true );
