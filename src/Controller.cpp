@@ -199,7 +199,13 @@ bool Controller::_calculateAdaptiveSlices()
 	remainingEnergy         = energySurplus - energyPerStorageCycle;
 	sliceCorrection         = static_cast<int>( remainingEnergy / energyPerSamplingCycle );
 	uncorrectedSliceNumber  = ( expectedAveragePerSlot - energyPerStorageCycle ) / energyPerSamplingCycle;
-	numberOfSlices          = uncorrectedSliceNumber + sliceCorrection < 1 ? 1 : uncorrectedSliceNumber + sliceCorrection;
+
+	if ( uncorrectedSliceNumber + sliceCorrection < 1 )
+		numberOfSlices = 1;
+	else if ( uncorrectedSliceNumber + sliceCorrection > minDutyCycle / maxDutyCycle )
+		numberOfSlices = maxDutyCycle;
+	else
+		numberOfSlices = uncorrectedSliceNumber + sliceCorrection;
 
 #ifdef DEBUG
 	debug.printLine( "Entered state: calculateAdaptiveSlices", true );
