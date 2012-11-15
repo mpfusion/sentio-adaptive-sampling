@@ -6,7 +6,7 @@ Install
 
 ### Clone the project
 
-    git clone --recursive git@github.com:mpfusion/sentio-adaptive-sampling.git
+    git clone --recursive git://github.com/mpfusion/sentio-adaptive-sampling.git
 
 Since the project contains the system kernel and drivers as a submodule, the
 parameter `--recursive` is necessary.
