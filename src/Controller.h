@@ -37,6 +37,8 @@ private:
 	static const          float panelArea;
 	static const          float energyPerSamplingCycle;
 	static const          float energyPerStorageCycle;
+	static const          float energyStorageEmpty;
+	static const          float energyStorageFull;
 
 	static CircularBuffer < secondsPerDay / minDutyCycle, float > historicalAverage;
 

@@ -21,6 +21,8 @@ const    float Controller::energyPerStorageCycle( _energyPerStorageCycle );
 const    float Controller::luminanceVoltageSquareMetrePerWatt( _luminanceVoltageSquareMetrePerWatt );
 const    float Controller::panelArea( _panelArea );
 const    float Controller::weightingFactor       = _weightingFactor;
+const    float Controller::energyStorageEmpty    = _energyStorageEmpty;
+const    float Controller::energyStorageFull     = _energyStorageFull;
 unsigned int   Controller::adaptiveSlices        = 1;
 unsigned int   Controller::bufferAverageElements = 0;
 float          Controller::bufferAverage[secondsPerDay / maxDutyCycle];
@@ -66,13 +68,16 @@ bool Controller::_initialState()
 
 	luminance.initializeInterface();
 
+	GPIO_PinModeSet( enableTXS0102, gpioModePushPull, 1 );
+	ltc2990.initializeInterfaceLTC();
+
 #ifdef DEBUG
 	sentio.LED_SetOrange();
 	debug.printLine( "\n", true );
 	debug.printLine( "Controller initializing", true );
 #endif
 
-	for (unsigned int i = 0; i < historicalAverage.size(); ++i)
+	for ( unsigned int i = 0; i < historicalAverage.size(); ++i )
 		historicalAverage.push_back( getLuminance() );
 
 	myStatusBlock.nextState = doSampling;
@@ -105,13 +110,29 @@ float Controller::getLuminance()
 
 float Controller::getEnergyStorageLevel()
 {
-	return .5;
+	float energyLevel;
+
+	ltc2990.setLTC_Config( celsius, single, V1_V2V3V4, 1, 0 );
+	ltc2990.triggerConversion();
+	ltc2990.readVoltage( energyLevel, Voltage_V3 );
+
+#ifdef DEBUG
+	debug.printLine( "energyLevel: ", false );
+	debug.printFloat( energyLevel, 4, true );
+#endif
+
+	if ( energyLevel <= energyStorageEmpty )
+		return 0;
+	else if ( energyLevel >= energyStorageFull )
+		return 1;
+	else
+		return ( energyLevel - energyStorageEmpty ) / ( energyStorageFull - energyStorageEmpty );
 }
 
 
 float Controller::energyStorageLevelCorrection()
 {
-	return .5 + atan( 10 * ( getEnergyStorageLevel() - 1/3. ) ) / 3.;
+	return .5 + atan( 10 * ( getEnergyStorageLevel() - 1 / 3. ) ) / 3.;
 }
 
 

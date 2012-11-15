@@ -143,6 +143,7 @@ SYSTEM_C_SRC +=                                                        \
 	$(CMSISDIR)/efm32lib/src/efm32_emu.c                                 \
 	$(CMSISDIR)/efm32lib/src/efm32_gpio.c                                \
 	$(CMSISDIR)/efm32lib/src/efm32_adc.c                                 \
+	$(CMSISDIR)/efm32lib/src/efm32_i2c.c                                 \
 
 SYSTEM_CXX_SRC +=                                                 \
 	$(SYSTEMDIR)/SentioEM3_HAL/time.cpp                             \
@@ -151,6 +152,7 @@ SYSTEM_CXX_SRC +=                                                 \
 	$(SYSTEMDIR)/SentioEM3_HAL/System.cpp                           \
 	$(SYSTEMDIR)/SentioEM3_HAL/AnalogInput.cpp                      \
 	$(SYSTEMDIR)/SentioEM3_HAL/SensorExtensions/SHT1X_Sensirion.cpp \
+	$(SYSTEMDIR)/SentioEM3_HAL/SensorExtensions/LTC2990.cpp         \
 	$(SYSTEMDIR)/SystemKernel/Statemachine.cpp                      \
 	$(SYSTEMDIR)/SystemKernel/DriverInterface.cpp                   \
 	$(SYSTEMDIR)/SystemKernel/main.cpp                              \

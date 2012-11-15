@@ -30,7 +30,8 @@
 #define _maxDutyCycle                       1      // seconds
 #define _luminanceVoltageSquareMetrePerWatt .00167 // volt square metre inverse watt
 #define _panelArea                          1     // only for testing
-#define _energyBufferSize                   43200  // joule
+#define _energyStorageFull                  2.5    // volt
+#define _energyStorageEmpty                 1.0    // volt
 #define _energyPerSamplingCycle             1      // joule
 #define _energyPerStorageCycle              5      // joule
 
@@ -43,7 +44,6 @@
 #define _guardTime             2
 #define _minimalOnTime         60
 #define _sleepPeriod           300
-#define _communicationPeriod   23          //dBTimeout+XX
-
+#define _communicationPeriod   23
 
 #endif /* APPLICATIONCONFIG_H_ */
