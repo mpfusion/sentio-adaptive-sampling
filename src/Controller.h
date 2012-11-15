@@ -58,6 +58,8 @@ private:
 
 	static float getTemperature();
 	static float getLuminance();
+	static float getEnergyStorageLevel();
+	static float energyStorageLevelCorrection();
 	static void  sendData( float value );
 
 	static INTERRUPT_CONFIG rtcInterruptConfig;

@@ -8,6 +8,8 @@
 #include "Controller.h"
 #include "ApplicationConfig.h"
 
+#include <cmath>
+
 STATUS_BLOCK     Controller::myStatusBlock;
 INTERRUPT_CONFIG Controller::rtcInterruptConfig;
 
@@ -98,6 +100,18 @@ float Controller::getLuminance()
 
 	// current radiation energy in Joule
 	return panelArea * minDutyCycle * lum / luminanceVoltageSquareMetrePerWatt;
+}
+
+
+float Controller::getEnergyStorageLevel()
+{
+	return .5;
+}
+
+
+float Controller::energyStorageLevelCorrection()
+{
+	return .5 + atan( 10 * ( getEnergyStorageLevel() - 1/3. ) ) / 3.;
 }
 
 
@@ -202,9 +216,9 @@ bool Controller::_calculateAdaptiveSlices()
 	if ( uncorrectedSliceNumber + sliceCorrection < 1 )
 		adaptiveSlices = 1;
 	else if ( uncorrectedSliceNumber + sliceCorrection > minDutyCycle / maxDutyCycle )
-		adaptiveSlices = minDutyCycle / maxDutyCycle;
+		adaptiveSlices = ceil( ( minDutyCycle / maxDutyCycle ) * energyStorageLevelCorrection() );
 	else
-		adaptiveSlices = uncorrectedSliceNumber + sliceCorrection;
+		adaptiveSlices = ceil( ( uncorrectedSliceNumber + sliceCorrection ) * energyStorageLevelCorrection() );
 
 #ifdef DEBUG
 	debug.printLine( "Entered state: calculateAdaptiveSlices", true );
