@@ -199,6 +199,10 @@ vpath %.c   $(C_PATHS)
 vpath %.cpp $(CXX_PATHS)
 vpath %.s   $(S_PATHS)
 
+.PHONY: doc
+doc:
+	doxygen doc/Doxyfile
+
 .PHONY: all
 all: $(EXE_DIR)/$(MAINFILE).out $(EXE_DIR)/$(MAINFILE).bin flash
 
@@ -242,7 +246,7 @@ $(EXE_DIR)/$(MAINFILE).bin: $(EXE_DIR)/$(MAINFILE).out
 
 .PHONY: clean
 clean:
-	$(RM) $(OBJ_DIR) $(LST_DIR) $(EXE_DIR)
+	$(RM) $(OBJ_DIR) $(LST_DIR) $(EXE_DIR) doc/html doc/latex
 	
 .PHONY: flash
 flash:
