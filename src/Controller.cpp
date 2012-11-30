@@ -69,7 +69,9 @@ bool Controller::_initialState()
 	luminance.initializeInterface();
 
 	GPIO_PinModeSet( enableTXS0102, gpioModePushPull, 1 );
-	ltc2990.initializeInterfaceLTC();
+
+	confeh.setMode( DLC, DIRECT );
+	confeh.initializeInterface();
 
 #ifdef DEBUG
 	sentio.LED_SetOrange();
@@ -110,11 +112,9 @@ float Controller::getLuminance()
 
 float Controller::getEnergyStorageLevel()
 {
-	float energyLevel;
+	float energyLevel, _, __;
 
-	ltc2990.setLTC_Config( celsius, single, V1_V2V3V4, 1, 0 );
-	ltc2990.triggerConversion();
-	ltc2990.readVoltage( energyLevel, Voltage_V3 );
+	confeh.getMeasurements( energyLevel, _, __ );
 
 #ifdef DEBUG
 	debug.printLine( "energyLevel: ", false );

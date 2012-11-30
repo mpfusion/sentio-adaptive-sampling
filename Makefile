@@ -153,6 +153,7 @@ SYSTEM_CXX_SRC +=                                                 \
 	$(SYSTEMDIR)/SentioEM3_HAL/AnalogInput.cpp                      \
 	$(SYSTEMDIR)/SentioEM3_HAL/SensorExtensions/SHT1X_Sensirion.cpp \
 	$(SYSTEMDIR)/SentioEM3_HAL/SensorExtensions/LTC2990.cpp         \
+	$(SYSTEMDIR)/SentioEM3_HAL/SensorExtensions/ConfEH.cpp          \
 	$(SYSTEMDIR)/SystemKernel/Statemachine.cpp                      \
 	$(SYSTEMDIR)/SystemKernel/DriverInterface.cpp                   \
 	$(SYSTEMDIR)/SystemKernel/main.cpp                              \
