@@ -1,3 +1,8 @@
+# dot directories
+.*
+!.gitignore
+!.gitmodules
+
 # Compiled Object files
 *.slo
 *.lo
@@ -12,9 +17,14 @@
 *.a
 
 # Directories created during compilation
-build
-bin
-lst
+/build
+/bin
+/lst
 
 # Editor leftovers
 .*.swp
+.~
+
+# outdated Doxygen documentation
+/doc/*
+!/doc/Doxyfile
