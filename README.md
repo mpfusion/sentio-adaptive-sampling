@@ -27,6 +27,12 @@ A simple `make` will compile all necessary code. A `make flash` will launch
 the flash loader (which might need root access, depending on the
 configuration) and write the binary blob to the platform.
 
+### Code style
+
+Tabs are used for indentation and spaces for alignment. To maintain a uniform
+code appearance the program `astyle` is used with the following options.
+
+	astyle -T4pbcUDH -z2
 
 ### TODO
 

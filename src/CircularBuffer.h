@@ -10,32 +10,32 @@
 
 #include <iterator>
 
-/* // Example
+/**
+ * A templated fixed-size circular buffer, based on
+ * `boost::circular_buffer`. Unset elements are initialized to zero.
  *
- * #include <iostream>
- * #include "CircularBuffer.h"
- * 
- * int main( int, char** )
- * {
- * 	CircularBuffer<3, float> cb;
- * 
- * 	cb.push_back( 41 );
- * 	cb.push_back( 42 );
- * 	cb.push_back( 43 );
- * 
- * 	CircularBuffer<3, float>::const_iterator i = cb.begin();
- * 
- * 	for ( int j = 0; j < cb.size() ; ++j, ++i )
- * 	{
- * 		std::cout << *i << std::endl;
- * 	}
- * }
+ * Example
  *
- * Unset elements are intialized to zero.
+ *     #include <iostream>
+ *     #include "CircularBuffer.h"
  *
+ *     int main( int, char** )
+ *     {
+ *     	CircularBuffer<3, float> cb;
+ *
+ *     	cb.push_back( 41 );
+ *     	cb.push_back( 42 );
+ *     	cb.push_back( 43 );
+ *
+ *     	CircularBuffer<3, float>::const_iterator i = cb.begin();
+ *
+ *     	for ( int j = 0; j < cb.size() ; ++j, ++i )
+ *     	{
+ *     		std::cout << *i << std::endl;
+ *     	}
+ *     return 0;
+ *     }
  */
-
-// Implement a templated fixed-size circular buffer, similar to boost::circular_buffer.
 template<const std::size_t N, typename T> class CircularBuffer
 {
 public:

@@ -71,14 +71,14 @@ bool Controller::_initialState()
 	GPIO_PinModeSet( enableTXS0102, gpioModePushPull, 1 );
 	ltc2990.initializeInterfaceLTC();
 
-#ifdef DEBUG
-	sentio.LED_SetOrange();
-	debug.printLine( "\n", true );
-	debug.printLine( "Controller initializing", true );
-#endif
-
 	for ( unsigned int i = 0; i < historicalAverage.size(); ++i )
 		historicalAverage.push_back( getLuminance() );
+
+#ifdef DEBUG
+	debug.printLine( "\n", true );
+	debug.printLine( "Controller initializing", true );
+	sentio.LED_SetOrange();
+#endif
 
 	myStatusBlock.nextState = doSampling;
 
@@ -103,7 +103,7 @@ float Controller::getLuminance()
 
 	luminance.readChannel( adcSingleInpCh3, lum );
 
-	// current radiation energy in Joule
+	///< current radiation energy in Joule
 	return panelArea * minDutyCycle * lum / luminanceVoltageSquareMetrePerWatt;
 }
 

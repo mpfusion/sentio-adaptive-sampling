@@ -12,30 +12,29 @@
  *                              Proper values                              *
  ***************************************************************************/
 
-/* #define _secondsPerDay                      86400  // seconds */
-/* #define _minDutyCycle                       3600   // seconds */
-/* #define _maxDutyCycle                       60     // seconds */
-/* #define _luminanceVoltageSquareMetrePerWatt .00167 // volt square metre inverse watt */
-/* #define _panelArea                          .02    // square metres */
-/* #define _energyBufferSize                   43200  // joule */
-/* #define _energyPerSamplingCycle             5      // joule */
-/* #define _energyPerStorageCycle              20     // joule */
+/* #define _secondsPerDay                      86400  ///< value in @f$ s @f$ */
+/* #define _minDutyCycle                       3600   ///< value in @f$ s @f$ */
+/* #define _maxDutyCycle                       60     ///< value in @f$ s @f$ */
+/* #define _luminanceVoltageSquareMetrePerWatt .00167 ///< value in @f$ \frac{Vm^2}{W} @f$ */
+/* #define _panelArea                          .02    ///< value in @f$ m^2 @f$ */
+/* #define _energyBufferSize                   43200  ///< value in @f$ J @f$ */
+/* #define _energyPerSamplingCycle             5      ///< value in @f$ J @f$ */
+/* #define _energyPerStorageCycle              20     ///< value in @f$ J @f$ */
 
 /***************************************************************************
  *                           Values for testing                            *
  ***************************************************************************/
 
-#define _secondsPerDay                      300    // only for testing
-#define _minDutyCycle                       10     // seconds
-#define _maxDutyCycle                       1      // seconds
-#define _luminanceVoltageSquareMetrePerWatt .00167 // volt square metre inverse watt
-#define _panelArea                          1     // only for testing
-#define _energyStorageFull                  2.5    // volt
-#define _energyStorageEmpty                 1.0    // volt
-#define _energyPerSamplingCycle             1      // joule
-#define _energyPerStorageCycle              5      // joule
-
-#define _weightingFactor       .5
+#define _secondsPerDay                      300    ///< value in @f$ s @f$
+#define _minDutyCycle                       10     ///< value in @f$ s @f$
+#define _maxDutyCycle                       1      ///< value in @f$ s @f$
+#define _luminanceVoltageSquareMetrePerWatt .00167 ///< value in @f$ \frac{Vm^2}{W} @f$
+#define _panelArea                          1      ///< value in @f$ m^2 @f$
+#define _energyStorageFull                  2.5    ///< value in @f$ V @f$
+#define _energyStorageEmpty                 1.0    ///< value in @f$ V @f$
+#define _energyPerSamplingCycle             1      ///< value in @f$ J @f$
+#define _energyPerStorageCycle              5      ///< value in @f$ J @f$
+#define _weightingFactor                    .5     ///< value in range @f$ (0, 1) @f$
 
 #define _maxNumberOfElements   10
 #define _maxNumberOfLoadStates 8
