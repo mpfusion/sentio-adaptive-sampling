@@ -73,9 +73,11 @@ bool Controller::_initialState()
 
 	confeh.setMode( DLC, DIRECT );
 	confeh.initializeInterface();
-
+	
+	float val = getLuminance();
+	
 	for ( unsigned int i = 0; i < historicalAverage.size(); ++i )
-		historicalAverage.push_back( getLuminance() );
+		historicalAverage.push_back( val );
 
 #ifdef DEBUG
 	debug.printLine( "\n", true );
@@ -107,7 +109,9 @@ float Controller::getLuminanceSolarPanel()
 	confeh.getMeasurements( _, __, solarCurrent );
 
 #ifdef DEBUG
-	debug.printLine( "solarCurrent: ", false );
+	debug.printLine( "\tsolarCurrent: ", false );
+	debug.printFloat( solarCurrent , 6, false );
+	debug.printLine( "\n", true );
 #endif
 
 	return solarCurrent;
@@ -187,7 +191,8 @@ bool Controller::_doSampling()
 	debug.printLine( "\tbufferAverageElements: ", false );
 	debug.printFloat( bufferAverageElements, 2, false );
 	debug.printLine( " / ", false );
-	debug.printFloat( adaptiveSlices, 2, true );
+	debug.printFloat( adaptiveSlices, 2, false );
+	debug.printLine( "\n", true );
 #endif
 
 	delayTime = minDutyCycle / adaptiveSlices;
