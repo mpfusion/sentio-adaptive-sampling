@@ -25,6 +25,7 @@ const    float Controller::energyStorageEmpty    = _energyStorageEmpty;
 const    float Controller::energyStorageFull     = _energyStorageFull;
 unsigned int   Controller::adaptiveSlices        = 1;
 unsigned int   Controller::bufferAverageElements = 0;
+float        (*Controller::getLuminance)()       = &Controller::getLuminanceSolarPanel;
 float          Controller::bufferAverage[secondsPerDay / maxDutyCycle];
 
 const time Controller::baseTime( 0 );
@@ -99,13 +100,32 @@ float Controller::getTemperature()
 }
 
 
-float Controller::getLuminance()
+float Controller::getLuminanceSolarPanel()
+{
+	float _, __, solarCurrent;
+
+	confeh.getMeasurements( _, __, solarCurrent );
+
+#ifdef DEBUG
+	debug.printLine( "solarCurrent: ", false );
+#endif
+
+	return solarCurrent;
+}
+
+
+float Controller::getLuminanceDavis6450()
 {
 	float lum = 0;
 
 	luminance.readChannel( adcSingleInpCh3, lum );
 
-	///< current radiation energy in Joule
+#ifdef DEBUG
+	debug.printLine( "Davis RAW: ", false );
+	debug.printFloat( lum, 6, true );
+#endif
+
+	// current radiation energy in Joule
 	return panelArea * minDutyCycle * lum / luminanceVoltageSquareMetrePerWatt;
 }
 

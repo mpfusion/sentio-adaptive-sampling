@@ -142,11 +142,42 @@ private:
 	static float getTemperature();
 	
 	/**
-	 * Read luminance value from the sensor.
+	 * Derive luminance from the solar panel current.
+	 *
+	 * Using the solar panel current to determine the luminance is a fast,
+	 * convenient and cheap method. The solar panel is always present and in
+	 * use anyway. However, the current depends on the battery level which
+	 * makes the measurement not as exact as using the Davis radiation sensor.
 	 *
 	 * @return Luminance radiation in joule.
 	 */
-	static float getLuminance();
+	static float getLuminanceSolarPanel();
+
+	/**
+	 * Read luminance value from the Davis radiation sensor #6450.
+	 *
+	 * Using the Davis radiation sensor is more accurate but costly. The
+	 * device is expensive in terms of installation cost, size and energy
+	 * consumption. According to the specification it needs to be powered up
+	 * one minute before each measurement.
+	 *
+	 * @return Luminance radiation in joule.
+	 */
+	static float getLuminanceDavis6450();
+
+	/**
+	 * Read luminance value.
+	 *
+	 * This is a pointer to a function which reads the luminance. At the
+	 * moment there are two functions implemented: the Davis radiation sensor
+	 * #6450 and using the solar panel current to determine the luminance.
+	 *
+	 * This pointer can be set to either `&getLuminanceSolarPanel` or to
+	 * `&getLuminanceDavis6450`.
+	 *
+	 * @return Luminance radiation in joule.
+	 */
+	static float (*getLuminance)();
 
 	/**
 	 * Read current energy storage level.
@@ -163,7 +194,7 @@ private:
 	 * This function controls how the energy storage level influences the
 	 * number of slices. The main idea is that the slice number should be
 	 * decreased with decreasing energy storage level. Here a version of the
-	 * arctangent was chosen. The exact algorithm is as follows:
+	 * arctangent was chosen. The exact function is as follows:
 	 *
 	 * @f[
 	 *   f = \frac12 + \frac13 \text{atan}
