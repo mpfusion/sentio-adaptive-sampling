@@ -9,6 +9,7 @@
 #include "ApplicationConfig.h"
 
 #include <cmath>
+#include <cstdio>
 
 STATUS_BLOCK     Controller::myStatusBlock;
 INTERRUPT_CONFIG Controller::rtcInterruptConfig;
@@ -27,14 +28,19 @@ unsigned int   Controller::adaptiveSlices        = 1;
 unsigned int   Controller::bufferAverageElements = 0;
 float        (*Controller::getLuminance)()       = &Controller::getLuminanceSolarPanel;
 float          Controller::bufferAverage[secondsPerDay / maxDutyCycle];
+float          Controller::energyStorageLevel;
 
 const time Controller::baseTime( 0 );
 time Controller::delayTime( 5 );
 
+uint8_t Controller::receiverAddress[8] = _receiverAddress;
+uint8_t Controller::sourceAddress[8];
+uint8_t Controller::receiveDataBuffer[50];
+uint8_t Controller::receivePayloadLength;
 
 Controller::Controller()
 {
-	myStatusBlock.numberOfISR         = 1;
+	myStatusBlock.numberOfISR         = 2;
 	myStatusBlock.restoreClockSetting = true;
 
 	rtcInterruptConfig.enableAlarm1           = true;
@@ -48,6 +54,8 @@ Controller::Controller()
 
 	ISR_Definition[0].function        = _ODD_GPIO_InterruptHandler;
 	ISR_Definition[0].interruptNumber = GPIO_ODD_IRQn;
+	ISR_Definition[1].function        = radio.getISR_FunctionPointer();
+	ISR_Definition[1].interruptNumber = _XBEE_ISR_Number_;
 }
 
 
@@ -79,12 +87,15 @@ bool Controller::_initialState()
 	for ( unsigned int i = 0; i < historicalAverage.size(); ++i )
 		historicalAverage.push_back( val );
 
+	radio.initializeInterface();
+	radio.initializeSystemBuffer( receiveDataBuffer, sourceAddress, &receivePayloadLength );
+
 #ifdef DEBUG
 	debug.printLine( "\n", true );
 	debug.printLine( "Controller initializing", true );
 	sentio.LED_SetOrange();
 #endif
-
+	
 	myStatusBlock.nextState = doSampling;
 
 	return true;
@@ -145,6 +156,8 @@ float Controller::getEnergyStorageLevel()
 	debug.printFloat( energyLevel, 4, true );
 #endif
 
+	energyStorageLevel = energyLevel;
+
 	if ( energyLevel <= energyStorageEmpty )
 		return 0;
 	else if ( energyLevel >= energyStorageFull )
@@ -162,14 +175,57 @@ float Controller::energyStorageLevelCorrection()
 
 void Controller::sendData( float value )
 {
-	value++;
+	union {
+		struct {
+			uint8_t temperature[7];
+			uint8_t delimiter0;
+			uint8_t slice[3];
+			uint8_t delimiter1;
+			uint8_t battery[3];
+			uint8_t delimiter2;
+		} payload;
+		uint8_t PAYLOAD[16];
+	};
+
+	const uint8_t delim = ',';
+	const uint8_t final_delim = ' ';
+	
+	// value delimiters
+	payload.delimiter0 = delim;
+	payload.delimiter1 = delim;
+	payload.delimiter2 = final_delim;
+	
+	// temperature
+	char tmp[7];
+	sprintf( tmp, "%+07f", value );
+	for ( uint8_t i = 0; i < 7; ++i )
+		payload.temperature[i] = static_cast<uint8_t>( tmp[i] );
+
+	// slice number
+	char slc[3];
+	sprintf( slc, "%03d", adaptiveSlices );
+	for ( uint8_t i = 0; i < 3; ++i )
+		payload.slice[i] = static_cast<uint8_t>( slc[i] );
+
+	// battery level is send in percent
+	char bat[3];
+	sprintf( bat, "%3f", energyStorageLevel*100 );
+	for ( uint8_t i = 0; i < 3; ++i )
+		payload.battery[i] = static_cast<uint8_t>( bat[i] );
+
+#ifdef DEBUG
+debug.printLine( "Sending data", true );
+#endif
+
+	radio.enableRadio_SM1();
+	radio.sendPacket( PAYLOAD, sizeof( PAYLOAD ), receiverAddress );
+	radio.disableRadio_SM1();
 }
 
 
 bool Controller::_doSampling()
 {
 #ifdef DEBUG
-	sentio.LED_SetRed();
 	debug.printLine( "Entered state: doSampling", true );
 #endif
 
@@ -259,6 +315,7 @@ bool Controller::_calculateAdaptiveSlices()
 	sliceCorrection         = static_cast<int>( remainingEnergy / energyPerSamplingCycle );
 	uncorrectedSliceNumber  = ( expectedAveragePerSlot - energyPerStorageCycle ) / energyPerSamplingCycle;
 
+	getEnergyStorageLevel(); // only for debugging
 	if ( uncorrectedSliceNumber + sliceCorrection < 1 )
 		adaptiveSlices = 1;
 	else if ( uncorrectedSliceNumber + sliceCorrection > minDutyCycle / maxDutyCycle )

@@ -151,6 +151,7 @@ SYSTEM_CXX_SRC +=                                                 \
 	$(SYSTEMDIR)/SentioEM3_HAL/DebugInterface.cpp                   \
 	$(SYSTEMDIR)/SentioEM3_HAL/System.cpp                           \
 	$(SYSTEMDIR)/SentioEM3_HAL/AnalogInput.cpp                      \
+	$(SYSTEMDIR)/SentioEM3_HAL/XBEE_Radio.cpp                       \
 	$(SYSTEMDIR)/SentioEM3_HAL/SensorExtensions/SHT1X_Sensirion.cpp \
 	$(SYSTEMDIR)/SentioEM3_HAL/SensorExtensions/LTC2990.cpp         \
 	$(SYSTEMDIR)/SentioEM3_HAL/SensorExtensions/ConfEH.cpp          \

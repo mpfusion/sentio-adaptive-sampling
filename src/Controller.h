@@ -44,8 +44,13 @@ private:
 	static const          float panelArea;
 	static const          float energyPerSamplingCycle;
 	static const          float energyPerStorageCycle;
-	static const          float energyStorageEmpty; ///< an energy storage level lower than this treats the storage as empty
-	static const          float energyStorageFull;  ///< an energy storage level larger than this treats the storage as full
+	static const          float energyStorageEmpty;   ///< an energy storage level lower than this treats the storage as empty
+	static const          float energyStorageFull;    ///< an energy storage level larger than this treats the storage as full
+	static                float energyStorageLevel;   ///< the last measured energy storage level, value is between zero and one
+	static       uint8_t        receiverAddress[];    ///< MAC address of the receiver, should be `const`
+	static       uint8_t        sourceAddress[];      ///< MAC address inderectly used for the XBEE communication
+	static       uint8_t        receiveDataBuffer[];  ///< inderectly used for the XBEE communication
+	static       uint8_t        receivePayloadLength; ///< inderectly used for the XBEE communication
 
 	/**
 	 * Historical average for the last day.
