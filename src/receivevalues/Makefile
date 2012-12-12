@@ -1,0 +1,25 @@
+program_NAME := receivevalues
+CFLAGS += -std=c11
+CXXFLAGS += -std=c++11
+CPPFLAGS += -Wall -Wextra -pedantic -O3
+CPPFLAGS += -ftrapv -Wfloat-equal -Wshadow -Wswitch-default -Wunreachable-code
+program_C_SRCS := $(wildcard *.c)
+program_CXX_SRCS := $(wildcard *.cpp)
+program_C_OBJS := ${program_C_SRCS:.c=.o}
+program_CXX_OBJS := ${program_CXX_SRCS:.cpp=.o}
+program_OBJS := $(program_C_OBJS) $(program_CXX_OBJS)
+program_INCLUDE_DIRS := ./include
+program_LIBRARY_DIRS :=
+program_LIBRARIES :=
+CPPFLAGS += $(foreach includedir,$(program_INCLUDE_DIRS),-I$(includedir))
+LDFLAGS  += $(foreach librarydir,$(program_LIBRARY_DIRS),-L$(librarydir))
+LDFLAGS  += $(foreach library,$(program_LIBRARIES),-l$(library))
+%.o : %.cpp ; $(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+.PHONY: all clean distclean
+all: $(program_NAME)
+$(program_NAME): $(program_OBJS)
+	$(LINK.cc) $(program_OBJS) -o $(program_NAME)
+clean:
+	@- $(RM) $(program_NAME)
+	@- $(RM) $(program_OBJS)
+distclean: clean
