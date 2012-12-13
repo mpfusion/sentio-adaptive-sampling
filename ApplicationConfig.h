@@ -38,6 +38,8 @@
 
 #define _receiverAddress { 0x00,0x13,0xA2,0x00,0x40,0x69,0x37,0x79 }  ///< MAC address of the receiver
 
+#define _nodeID                0x30  ///< node ID that is send via XBEE
+
 #define _maxNumberOfElements   10
 #define _maxNumberOfLoadStates 8
 

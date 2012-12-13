@@ -183,17 +183,21 @@ void Controller::sendData( float value )
 			uint8_t delimiter1;
 			uint8_t battery[3];
 			uint8_t delimiter2;
+			uint8_t nodeID;
+			uint8_t delimiter3;
 		} payload;
-		uint8_t PAYLOAD[16];
+		uint8_t PAYLOAD[18];
 	};
 
-	const uint8_t delim = ',';
-	const uint8_t final_delim = ' ';
-	
 	// value delimiters
-	payload.delimiter0 = delim;
-	payload.delimiter1 = delim;
-	payload.delimiter2 = final_delim;
+	const uint8_t delim = '\0';
+	payload.delimiter0  = delim;
+	payload.delimiter1  = delim;
+	payload.delimiter2  = delim;
+	payload.delimiter3  = delim;
+
+	// node ID
+	payload.nodeID = _nodeID;
 	
 	// temperature
 	char tmp[7];

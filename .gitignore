@@ -28,3 +28,6 @@
 # outdated Doxygen documentation
 /doc/*
 !/doc/Doxyfile
+
+# compiled binary
+/src/receivevalues/receivevalues
