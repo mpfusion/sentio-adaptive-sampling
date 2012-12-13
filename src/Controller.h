@@ -40,7 +40,7 @@ private:
 	static const unsigned int   secondsPerDay = _secondsPerDay;
 	static const unsigned int   minDutyCycle  = _minDutyCycle;      ///< maximal amount of time elapsed between individual sampling cycles
 	static const unsigned int   maxDutyCycle  = _maxDutyCycle;      ///< minimal amount of time elapsed between individual sampling cycles
-	static const          float luminanceVoltageSquareMetrePerWatt; ///< factor used for computing the incoming solar energy
+	static const          float luminanceVoltageSquareMetrePerWatt; ///< factor used for computing the incoming solar energy for the Davis sensor
 	static const          float panelArea;
 	static const          float energyPerSamplingCycle;
 	static const          float energyPerStorageCycle;

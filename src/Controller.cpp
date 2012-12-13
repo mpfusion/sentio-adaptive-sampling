@@ -125,7 +125,7 @@ float Controller::getLuminanceSolarPanel()
 	debug.printLine( "\n", true );
 #endif
 
-	return solarCurrent;
+	return solarCurrent / .05;
 }
 
 
