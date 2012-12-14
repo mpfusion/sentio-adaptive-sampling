@@ -125,6 +125,7 @@ float Controller::getLuminanceSolarPanel()
 	debug.printLine( "\n", true );
 #endif
 
+	// current radiation energy in Joule
 	return solarCurrent / .05;
 }
 
@@ -218,7 +219,7 @@ void Controller::sendData( float value )
 		payload.battery[i] = static_cast<uint8_t>( bat[i] );
 
 #ifdef DEBUG
-debug.printLine( "Sending data", true );
+	debug.printLine( "Sending data", true );
 #endif
 
 	radio.enableRadio_SM1();
@@ -256,6 +257,14 @@ bool Controller::_doSampling()
 #endif
 
 	delayTime = minDutyCycle / adaptiveSlices;
+	timer.setAlarmPeriod( delayTime, alarm1, alarmMatchHour_Minutes_Seconds );
+	timer.setLowPowerMode();
+
+#ifdef DEBUG
+	debug.printLine( "\tgoing to sleep for ", false );
+	debug.printFloat( minDutyCycle/(60*adaptiveSlices), 2, false );
+	debug.printLine( " minutes", true );
+#endif
 
 	myStatusBlock.nextState   = doSampling;
 	myStatusBlock.sleepMode   = 3;
@@ -319,7 +328,6 @@ bool Controller::_calculateAdaptiveSlices()
 	sliceCorrection         = static_cast<int>( remainingEnergy / energyPerSamplingCycle );
 	uncorrectedSliceNumber  = ( expectedAveragePerSlot - energyPerStorageCycle ) / energyPerSamplingCycle;
 
-	getEnergyStorageLevel(); // only for debugging
 	if ( uncorrectedSliceNumber + sliceCorrection < 1 )
 		adaptiveSlices = 1;
 	else if ( uncorrectedSliceNumber + sliceCorrection > minDutyCycle / maxDutyCycle )
