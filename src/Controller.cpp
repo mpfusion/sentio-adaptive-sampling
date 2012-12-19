@@ -64,6 +64,10 @@ bool Controller::_initialState()
 #ifdef DEBUG
 	debug.initializeInterface( numberOfDebugPinsUsed, numberOfButtonsUsed );
 	debug.initializeDebugUart();
+
+	debug.printLine( "Controller initializing", true );
+	/* sentio.LED_SetOrange(); */
+	/* sentio.LED_SetRed(); */
 #endif
 
 	timer.initializeInterface();
@@ -92,8 +96,9 @@ bool Controller::_initialState()
 
 #ifdef DEBUG
 	debug.printLine( "\n", true );
-	debug.printLine( "Controller initializing", true );
-	sentio.LED_SetOrange();
+	debug.printLine( "Controller initialised", true );
+	/* sentio.LED_SetOrange(); */
+	/* sentio.LED_ClearRed(); */
 #endif
 	
 	myStatusBlock.nextState = doSampling;
