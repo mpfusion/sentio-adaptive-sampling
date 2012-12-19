@@ -93,6 +93,7 @@ bool Controller::_initialState()
 
 	radio.initializeInterface();
 	radio.initializeSystemBuffer( receiveDataBuffer, sourceAddress, &receivePayloadLength );
+	radio.disableRadio_SM1();
 
 #ifdef DEBUG
 	debug.printLine( "\n", true );
@@ -239,10 +240,6 @@ bool Controller::_doSampling()
 	debug.printLine( "Entered state: doSampling", true );
 #endif
 
-	timer.setAlarmPeriod( delayTime, alarm1, alarmMatchSeconds );
-	timer.resetInterrupts();
-	timer.setLowPowerMode();
-
 	float temperature = getTemperature();
 
 #ifdef DEBUG
@@ -263,6 +260,7 @@ bool Controller::_doSampling()
 
 	delayTime = minDutyCycle / adaptiveSlices;
 	timer.setAlarmPeriod( delayTime, alarm1, alarmMatchHour_Minutes_Seconds );
+	timer.resetInterrupts();
 	timer.setLowPowerMode();
 
 #ifdef DEBUG
