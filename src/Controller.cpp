@@ -214,7 +214,7 @@ void Controller::sendData( float value )
 
 	// battery level is send in percent
 	char bat[3];
-	sprintf( bat, "%3f", energyStorageLevel*100 );
+	sprintf( bat, "%3f", getEnergyStorageLevel() * 100 );
 	for ( uint8_t i = 0; i < 3; ++i )
 		payload.battery[i] = static_cast<uint8_t>( bat[i] );
 
