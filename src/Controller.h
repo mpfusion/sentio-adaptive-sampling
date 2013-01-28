@@ -136,8 +136,8 @@ private:
 	 */
 	static void _ODD_GPIO_InterruptHandler( uint32_t temp );
 
-	static const time baseTime;
-	static       time delayTime; ///< controls the sleep duration
+	static time baseTime;  ///< controls the starting value of the timer
+	static time delayTime; ///< controls the sleep duration
 
 	/**
 	 * Read temperature value from the sensor.

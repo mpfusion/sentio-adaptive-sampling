@@ -30,7 +30,7 @@ float        (*Controller::getLuminance)()       = &Controller::getLuminanceSola
 float          Controller::bufferAverage[secondsPerDay / maxDutyCycle];
 float          Controller::energyStorageLevel;
 
-const time Controller::baseTime( 0 );
+time Controller::baseTime( 0 );
 time Controller::delayTime( 5 );
 
 uint8_t Controller::receiverAddress[8] = _receiverAddress;
@@ -259,6 +259,8 @@ bool Controller::_doSampling()
 #endif
 
 	delayTime = minDutyCycle / adaptiveSlices;
+	baseTime  = 0;
+	timer.setBaseTime( baseTime );
 	timer.setAlarmPeriod( delayTime, alarm1, alarmMatchHour_Minutes_Seconds );
 	timer.resetInterrupts();
 	timer.setLowPowerMode();
