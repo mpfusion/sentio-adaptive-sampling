@@ -6,7 +6,6 @@
  */
 
 #include "Controller.h"
-#include "ApplicationConfig.h"
 
 #include <cmath>
 #include <cstdio>
