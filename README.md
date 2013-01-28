@@ -27,6 +27,16 @@ A simple `make` will compile all necessary code. A `make flash` will launch
 the flash loader (which might need root access, depending on the
 configuration) and write the binary blob to the platform.
 
+
+### Documentation
+
+A `make doc` will create the documentation for this project and the Sentio
+system. Doxygen needs to be installed. By default a HTML version is generated.
+To view the HTML documentation, point the browser to the file
+`doc/html/index.html`. For a PDF version LaTeX needs to be installed. To
+generate the PDF file, go to the directory `doc/latex` and run `make`.
+
+
 ### Code style
 
 Tabs are used for indentation and spaces for alignment. To maintain a uniform
@@ -34,9 +44,8 @@ code appearance the program `astyle` is used with the following options.
 
 	astyle -T4pbcUDH -z2
 
+
 ### TODO
 
-- Divide `Makefile` into two parts for separate compilation of user code and
-  system files and move the system `Makefile` into the `sentio-framework` submodule.
 - Adjust `Makefile` to support multiple platforms.
 - Remove `sudo` call from Makefile.
