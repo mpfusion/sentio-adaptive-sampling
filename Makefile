@@ -2,6 +2,7 @@
 # Directories to be included                                       #
 ####################################################################
 
+PROJECTNAME      = Controller
 USERINCLUDEPATHS = src
 SYSTEMDIR        = system
 
