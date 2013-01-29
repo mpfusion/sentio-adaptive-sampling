@@ -14,7 +14,7 @@ STATUS_BLOCK     Controller::myStatusBlock;
 INTERRUPT_CONFIG Controller::rtcInterruptConfig;
 
 
-CircularBuffer < Controller::secondsPerDay / Controller::minDutyCycle, float > Controller::historicalAverage;
+HistoricalAverage < Controller::secondsPerDay / Controller::minDutyCycle, float > Controller::historicalAverage;
 
 const    float Controller::energyPerSamplingCycle( _energyPerSamplingCycle );
 const    float Controller::energyPerStorageCycle( _energyPerStorageCycle );
@@ -85,10 +85,7 @@ bool Controller::_initialState()
 	confeh.setMode( DLC, DIRECT );
 	confeh.initializeInterface();
 	
-	float val = getLuminance();
-	
-	for ( unsigned int i = 0; i < historicalAverage.size(); ++i )
-		historicalAverage.push_back( val );
+	historicalAverage.fill( getLuminance() );
 
 	radio.initializeInterface();
 	radio.initializeSystemBuffer( receiveDataBuffer, sourceAddress, &receivePayloadLength );
@@ -309,9 +306,9 @@ bool Controller::_sampleStorage()
 
 bool Controller::_calculateAdaptiveSlices()
 {
-	float historicalAverageFirst = historicalAverage.pop_back();
+	float historicalAverageFirst = historicalAverage.pop();
 	float lum                    = getLuminance();
-	float histAvg                = weightingFactor * historicalAverageFirst + ( 1 - weightingFactor ) * lum;
+	float histAvg                = weightingFactor * historicalAverage.pop() + ( 1 - weightingFactor ) * lum;
 	float expectedAveragePerDay  = 0;
 
 	float expectedAveragePerSlot;
@@ -320,12 +317,9 @@ bool Controller::_calculateAdaptiveSlices()
 	int   sliceCorrection;
 	int   uncorrectedSliceNumber;
 
-	historicalAverage.push_back( histAvg );
+	historicalAverage.push( histAvg );
 
-	for ( unsigned int i = 0; i < historicalAverage.size(); ++i )
-		expectedAveragePerDay += historicalAverageFirst;
-
-	expectedAveragePerDay  /= historicalAverage.size();
+	expectedAveragePerDay   = historicalAverage.average();
 	expectedAveragePerSlot  = minDutyCycle * expectedAveragePerDay / secondsPerDay;
 	energySurplus           = lum - historicalAverageFirst;
 	remainingEnergy         = energySurplus - energyPerStorageCycle;

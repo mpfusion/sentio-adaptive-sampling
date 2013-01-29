@@ -13,7 +13,7 @@
 
 #include "time.h"
 #include "ApplicationConfig.h"
-#include "CircularBuffer.h"
+#include "HistoricalAverage.h"
 
 
 enum CONTROLLER
@@ -55,12 +55,11 @@ private:
 	/**
 	 * Historical average for the last day.
 	 *
-	 * This is a fixed-length circular buffer similar to
-	 * `boost::circular_buffer`. It is initialized with the
+	 * This is a fixed-length buffer. It is initialized with the
 	 * current luminance value. The oldest values are discarded if more
 	 * values than the capacity are added.
 	 */
-	static CircularBuffer < secondsPerDay / minDutyCycle, float > historicalAverage;
+	static HistoricalAverage < secondsPerDay / minDutyCycle, float > historicalAverage;
 
 	static unsigned int   bufferAverageElements;
 	static          float bufferAverage[];
@@ -77,7 +76,7 @@ private:
 	 * current value irrelevant and only uses the history. 
 	 *
 	 * Practical values lie between 0.2 and 0.5.
-	 */	
+	 */
 	static const    float weightingFactor;
 
 	/**
