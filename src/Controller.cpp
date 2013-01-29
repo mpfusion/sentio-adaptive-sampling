@@ -334,7 +334,7 @@ bool Controller::_calculateAdaptiveSlices()
 
 	if ( uncorrectedSliceNumber + sliceCorrection < 1 )
 		adaptiveSlices = 1;
-	else if ( uncorrectedSliceNumber + sliceCorrection > minDutyCycle / maxDutyCycle )
+	else if ( uncorrectedSliceNumber + sliceCorrection > static_cast<int>( minDutyCycle / maxDutyCycle ) )
 		adaptiveSlices = ceil( ( minDutyCycle / maxDutyCycle ) * energyStorageLevelCorrection() );
 	else
 		adaptiveSlices = ceil( ( uncorrectedSliceNumber + sliceCorrection ) * energyStorageLevelCorrection() );
