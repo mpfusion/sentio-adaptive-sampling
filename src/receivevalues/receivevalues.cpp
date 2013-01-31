@@ -1,28 +1,32 @@
+#include <cstdlib>
 #include <ctime>
 #include "XBEE_Radio.h"
 
-int main()
+static uint8_t length[48];
+static uint8_t source[8];
+
+static union {
+	struct {
+		uint8_t temperature[7];
+		uint8_t delimiter0;
+		uint8_t slice[3];
+		uint8_t delimiter1;
+		uint8_t battery[3];
+		uint8_t delimiter2;
+		uint8_t nodeID;
+		uint8_t delimiter3;
+	} payload;
+	uint8_t PAYLOAD[18];
+};
+
+int main( int argc, char const *argv[] )
 {
-	uint8_t length[48];
-	uint8_t source[8];
-
-	union {
-		struct {
-			uint8_t temperature[7];
-			uint8_t delimiter0;
-			uint8_t slice[3];
-			uint8_t delimiter1;
-			uint8_t battery[3];
-			uint8_t delimiter2;
-			uint8_t nodeID;
-			uint8_t delimiter3;
-		} payload;
-		uint8_t PAYLOAD[18];
-	};
-
 	XBEE_Radio myradio;
 
-	myradio.initializeInterface( "/dev/ttyUSB1", 38400 );
+	//.device is first argument or default value
+	std::string device = argc == 2 ? argv[1] : "/dev/ttyUSB1";
+
+	myradio.initializeInterface( device, 38400 );
 	myradio.initializeSystemBuffer( PAYLOAD, source, length );
 
 	time_t rawtime;
@@ -44,5 +48,5 @@ int main()
 				<< payload.battery     << std::endl;
 		}
 
-	return 0;
+	return EXIT_SUCCESS;
 }
