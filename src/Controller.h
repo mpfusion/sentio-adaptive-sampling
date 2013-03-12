@@ -64,7 +64,7 @@ private:
 	static unsigned int   bufferAverageElements;
 	static          float bufferAverage[];
 
-	static unsigned int   adaptiveSlices;
+	static          int   adaptiveSlices;
 
 	/**
 	 * Relevance of the past values.

@@ -23,7 +23,7 @@ const    float Controller::panelArea( _panelArea );
 const    float Controller::weightingFactor       = _weightingFactor;
 const    float Controller::energyStorageEmpty    = _energyStorageEmpty;
 const    float Controller::energyStorageFull     = _energyStorageFull;
-unsigned int   Controller::adaptiveSlices        = 1;
+         int   Controller::adaptiveSlices        = 1;
 unsigned int   Controller::bufferAverageElements = 0;
 float        (*Controller::getLuminance)()       = &Controller::getLuminanceSolarPanel;
 float          Controller::bufferAverage[secondsPerDay / maxDutyCycle];
@@ -306,44 +306,23 @@ bool Controller::_sampleStorage()
 
 bool Controller::_calculateAdaptiveSlices()
 {
-	float historicalAverageFirst = historicalAverage.pop();
-	float lum                    = getLuminance();
-	float histAvg                = weightingFactor * historicalAverage.pop() + ( 1 - weightingFactor ) * lum;
-	float expectedAveragePerDay  = 0;
 
-	float expectedAveragePerSlot;
-	float energySurplus;
-	float remainingEnergy;
-	int   sliceCorrection;
-	int   uncorrectedSliceNumber;
+	const int   slotsPerDay            = secondsPerDay / minDutyCycle;
+	const float histAvg                = weightingFactor * historicalAverage.pop() + ( 1 - weightingFactor ) * getLuminance();
+	const float expectedAveragePerDay  = historicalAverage.average();
+	const float expectedAveragePerSlot = expectedAveragePerDay / slotsPerDay;
+	
+	adaptiveSlices = ceil( energyStorageLevelCorrection() *
+		( ( expectedAveragePerDay / slotsPerDay - energyPerStorageCycle ) / energyPerSamplingCycle + 1 ) );
 
-	historicalAverage.push( histAvg );
-
-	expectedAveragePerDay   = historicalAverage.average();
-	expectedAveragePerSlot  = minDutyCycle * expectedAveragePerDay / secondsPerDay;
-	energySurplus           = lum - historicalAverageFirst;
-	remainingEnergy         = energySurplus - energyPerStorageCycle;
-	sliceCorrection         = static_cast<int>( remainingEnergy / energyPerSamplingCycle );
-	uncorrectedSliceNumber  = ( expectedAveragePerSlot - energyPerStorageCycle ) / energyPerSamplingCycle;
-
-	if ( uncorrectedSliceNumber + sliceCorrection < 1 )
+	if ( adaptiveSlices < 1 )
 		adaptiveSlices = 1;
-	else if ( uncorrectedSliceNumber + sliceCorrection > static_cast<int>( minDutyCycle / maxDutyCycle ) )
-		adaptiveSlices = ceil( ( minDutyCycle / maxDutyCycle ) * energyStorageLevelCorrection() );
-	else
-		adaptiveSlices = ceil( ( uncorrectedSliceNumber + sliceCorrection ) * energyStorageLevelCorrection() );
 
 #ifdef DEBUG
 	debug.printLine( "Entered state: calculateAdaptiveSlices", true );
 
 	debug.printLine( "\tweightingFactor: ", false );
 	debug.printFloat( weightingFactor, 4, true );
-
-	debug.printLine( "\thistoricalAverageFirst: ", false );
-	debug.printFloat( historicalAverageFirst, 7, true );
-
-	debug.printLine( "\tMeasured luminance: ", false );
-	debug.printFloat( lum, 7, true );
 
 	debug.printLine( "\tAdd new historical average value, histAvg: ", false );
 	debug.printFloat( histAvg, 7, true );
@@ -353,15 +332,6 @@ bool Controller::_calculateAdaptiveSlices()
 
 	debug.printLine( "\tExpected average per slot: ", false );
 	debug.printFloat( expectedAveragePerSlot, 7, true );
-
-	debug.printLine( "\tSurplus: ", false );
-	debug.printFloat( lum - historicalAverageFirst, 7, true );
-
-	debug.printLine( "\tuncorrectedSliceNumber: ", false );
-	debug.printFloat( uncorrectedSliceNumber, 4, true );
-
-	debug.printLine( "\tsliceCorrection: ", false );
-	debug.printFloat( sliceCorrection, 4, true );
 
 	debug.printLine( "\tadaptiveSlices: ", false );
 	debug.printFloat( adaptiveSlices, 4, true );

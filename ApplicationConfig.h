@@ -1,7 +1,7 @@
 /*
  * ApplicationConfig.h
  *
- *  Created on: Nov 17, 2012
+ *  Created on: 2012-11-17
  *      Author: Marco Patzer
  */
 
