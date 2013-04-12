@@ -53,7 +53,7 @@ Controller::Controller()
 
 	ISR_Definition[0].function        = _ODD_GPIO_InterruptHandler;
 	ISR_Definition[0].interruptNumber = GPIO_ODD_IRQn;
-	ISR_Definition[1].function        = radio.getISR_FunctionPointer();
+	ISR_Definition[1].function        = xbee.getISR_FunctionPointer();
 	ISR_Definition[1].interruptNumber = _XBEE_ISR_Number_;
 }
 
@@ -87,9 +87,9 @@ bool Controller::_initialState()
 	
 	historicalAverage.fill( getLuminance() );
 
-	radio.initializeInterface();
-	radio.initializeSystemBuffer( receiveDataBuffer, sourceAddress, &receivePayloadLength );
-	radio.disableRadio_SM1();
+	xbee.initializeInterface();
+	xbee.initializeSystemBuffer( receiveDataBuffer, sourceAddress, &receivePayloadLength );
+	xbee.disableRadio_SM1();
 
 #ifdef DEBUG
 	debug.printLine( "\n", true );
@@ -224,9 +224,9 @@ void Controller::sendData( float value )
 	debug.printLine( "Sending data", true );
 #endif
 
-	radio.enableRadio_SM1();
-	radio.sendPacket( PAYLOAD, sizeof( PAYLOAD ), receiverAddress );
-	radio.disableRadio_SM1();
+	xbee.enableRadio_SM1();
+	xbee.sendPacket( PAYLOAD, sizeof( PAYLOAD ), receiverAddress );
+	xbee.disableRadio_SM1();
 }
 
 
