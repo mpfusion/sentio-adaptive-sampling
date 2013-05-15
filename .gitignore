@@ -24,5 +24,6 @@
 /doc/*
 !/doc/Doxyfile
 
-# compiled binary
+# compiled binaries
 /src/receivevalues/receivevalues
+/src/listener/listener
