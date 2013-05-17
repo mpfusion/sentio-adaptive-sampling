@@ -1,8 +1,3 @@
-# dot directories
-.*
-!.gitignore
-!.gitmodules
-
 # Compiled Object files
 *.slo
 *.lo
@@ -29,5 +24,6 @@
 /doc/*
 !/doc/Doxyfile
 
-# compiled binary
+# compiled binaries
 /src/receivevalues/receivevalues
+/src/listener/listener

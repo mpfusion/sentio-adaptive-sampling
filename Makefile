@@ -2,7 +2,9 @@
 # Directories to be included                                       #
 ####################################################################
 
-PROJECTNAME      = Controller
+PROJECTNAME      = Algorithms
+# PROJECTNAME      = Controller
+
 USERINCLUDEPATHS = src
 SYSTEMDIR        = system
 
@@ -12,7 +14,7 @@ SYSTEMDIR        = system
 ####################################################################
 
 USER_C_SRC   =
-USER_CXX_SRC = $(USERINCLUDEPATHS)/Controller.cpp
+USER_CXX_SRC = $(USERINCLUDEPATHS)/$(PROJECTNAME).cpp
 USER_ASM_SRC =
 
 
@@ -24,16 +26,17 @@ CPPFLAGS += \
 	-DDEBUG   \
 
 CXXFLAGS += \
-	-std=c++98         \
-	-fno-exceptions    \
-	-ftrapv            \
-	-Wall              \
-	-Wextra            \
-	-Wfloat-equal      \
-	-Wshadow           \
-	-Wswitch-default   \
-	-Wunreachable-code \
-	-pedantic          \
+	-std=c++98               \
+	-fno-exceptions          \
+	-ftrapv                  \
+	-Wall                    \
+	-Wextra                  \
+	-Wfloat-equal            \
+	-Wshadow                 \
+	-Wswitch-default         \
+	-Wunreachable-code       \
+	-Wno-int-to-pointer-cast \
+	-pedantic                \
 
 CFLAGS += \
 	-std=gnu99      \
