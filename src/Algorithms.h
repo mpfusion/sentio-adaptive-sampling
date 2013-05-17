@@ -13,7 +13,7 @@
 
 #include "time.h"
 #include "ApplicationConfig.h"
-#include "HistoricalAverage.h"
+#include "EWMA.h"
 
 
 enum ALGORITHMS
