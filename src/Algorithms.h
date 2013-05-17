@@ -13,7 +13,6 @@
 
 #include "time.h"
 #include "ApplicationConfig.h"
-#include "EWMA.h"
 
 
 enum ALGORITHMS
@@ -89,17 +88,7 @@ private:
 	static time baseTime;  ///< controls the starting value of the timer
 	static time delayTime; ///< controls the sleep duration
 
-	/**
-	 * Derive luminance from the solar panel current.
-	 *
-	 * Using the solar panel current to determine the luminance is a fast,
-	 * convenient and cheap method. The solar panel is always present and in
-	 * use anyway. However, the current depends on the battery level which
-	 * makes the measurement not as exact as using the Davis radiation sensor.
-	 *
-	 * @return Luminance radiation in joule.
-	 */
-	static float getLuminance();
+	/* static EWMA ewma;      ///< Exponentially-Weighted Moving Average */
 
 	/**
 	 * Sends the data to a remote location via radio.
@@ -114,6 +103,18 @@ private:
 public:
 	Algorithms();
 	~Algorithms() {}
+
+	/**
+	 * Derive luminance from the solar panel current.
+	 *
+	 * Using the solar panel current to determine the luminance is a fast,
+	 * convenient and cheap method. The solar panel is always present and in
+	 * use anyway. However, the current depends on the battery level which
+	 * makes the measurement not as exact as using the Davis radiation sensor.
+	 *
+	 * @return Luminance radiation in joule.
+	 */
+	static float getLuminance();
 
 	ERROR_CODE executeApplication();
 	uint8_t    setupApplication();

@@ -8,6 +8,7 @@
 #ifndef EWMA_H_PB1IR8OZ
 #define EWMA_H_PB1IR8OZ
 
+#include "Algorithms.h"
 #include "HistoricalAverage.h"
 
 class EWMA

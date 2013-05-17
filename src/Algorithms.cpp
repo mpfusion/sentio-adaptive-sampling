@@ -6,6 +6,7 @@
  */
 
 #include "Algorithms.h"
+#include "EWMA.h"
 
 #include <cmath>
 #include <cstdio>
@@ -14,6 +15,9 @@ STATUS_BLOCK     Algorithms::myStatusBlock;
 INTERRUPT_CONFIG Algorithms::rtcInterruptConfig;
 
 Configuration Algorithms::config;
+
+/* EWMA Algorithms::ewma; */
+EWMA ewma;
 
 time Algorithms::baseTime( 0 );
 time Algorithms::delayTime( 10 );
@@ -92,6 +96,8 @@ bool Algorithms::_mainstate()
 #ifdef DEBUG
 	debug.printLine( "In mainstate", true );
 #endif
+
+	ewma.calculateAdaptiveSlices();
 
 	sendData( 42 );
 	receiveData();

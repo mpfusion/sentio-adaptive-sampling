@@ -1,5 +1,5 @@
 /*
- * ApplicationConfig.h
+ * EWMA.h
  *
  *  Created on: 2013-05-16
  *      Author: Marco Patzer
@@ -10,7 +10,7 @@
 void EWMA::calculateAdaptiveSlices()
 {
 
-	const int   slotsPerDay            = secondsPerDay / minDutyCycle;
+	/* const int   slotsPerDay            = secondsPerDay / minDutyCycle; */
 	/* const float histAvg                = weightingFactor * historicalAverage.pop() + ( 1 - weightingFactor ) * getLuminance(); */
 	/* const float expectedAveragePerDay  = historicalAverage.average(); */
 	/* const float expectedAveragePerSlot = expectedAveragePerDay / slotsPerDay; */
@@ -43,7 +43,7 @@ void EWMA::calculateAdaptiveSlices()
 
 }
 
-EWMA::EWMA()
+EWMA::EWMA() :
 	secondsPerDay( 86400 ),
 	minDutyCycle( 1800 ),
 	maxDutyCycle( 300 ),
@@ -51,9 +51,5 @@ EWMA::EWMA()
 	energyPerStorageCycle( .00006 ),
 	adaptiveSlices( 1 )
 {
-	historicalAverage.fill( getLuminance() );
-};
-
-
-{
+	historicalAverage.fill( Algorithms::getLuminance() );
 }
