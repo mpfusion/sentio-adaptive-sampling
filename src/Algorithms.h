@@ -1,7 +1,7 @@
 /*
  * Algorithms.h
  *
- *  Created on: 2012-10-24
+ *  Created on: 2013-05-16
  *      Author: Marco Patzer
  */
 
@@ -24,7 +24,27 @@ enum ALGORITHMS
 
 struct Configuration
 {
-	int sleep_time;
+	unsigned int sleep_time;
+
+	/**
+	 * An energy storage level lower than this treats the storage as empty.
+	 *
+	 * Value in @f$ V @f$
+	 */
+	const float energyStorageEmpty;
+	
+	/**
+	 * An energy storage level higher than this treats the storage as full.
+	 *
+	 * Value in @f$ V @f$
+	 */
+	const float energyStorageFull;
+
+	Configuration() :
+		sleep_time( 10 ),
+		energyStorageEmpty( 1.0 ),
+		energyStorageFull( 2.5 )
+	{};
 };
 
 

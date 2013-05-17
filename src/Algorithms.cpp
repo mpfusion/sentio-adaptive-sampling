@@ -16,12 +16,12 @@ INTERRUPT_CONFIG Algorithms::rtcInterruptConfig;
 Configuration Algorithms::config;
 
 time Algorithms::baseTime( 0 );
-time Algorithms::delayTime( 5 );
+time Algorithms::delayTime( 10 );
 
 uint8_t payload[11];
 
-volatile bool packetReceived  = false;
-volatile uint16_t packetCount = 0;
+volatile bool     packetReceived = false;
+volatile uint16_t packetCount    = 0;
 
 Algorithms::Algorithms()
 {
@@ -41,8 +41,6 @@ Algorithms::Algorithms()
 	ISR_Definition[1].function        = _EVEN_GPIO_InterruptHandler;
 	ISR_Definition[1].interruptNumber = GPIO_EVEN_IRQn;
 	ISR_Definition[1].anchorISR       = false;
-
-	config.sleep_time = 5;
 }
 
 
@@ -103,7 +101,6 @@ bool Algorithms::_mainstate()
 	debug.printFloat( config.sleep_time, 0, true );
 #endif
 
-	baseTime  = 0;
 	timer.setBaseTime( baseTime );
 	timer.setAlarmPeriod( config.sleep_time, alarm1, alarmMatchHour_Minutes_Seconds );
 	timer.resetInterrupts();
@@ -175,6 +172,7 @@ void Algorithms::receiveData()
 
 		debug.printLine( "\n\rCRC Status: ", false );
 		debug.printDecimal( cc1101.getCrcStatus() );
+		debug.printLine( " ", true );
 	}
 	
 	while ( !cc1101.getCrcStatus() || cc1101.getPacketAddress() != cc1101.getAddress() );
