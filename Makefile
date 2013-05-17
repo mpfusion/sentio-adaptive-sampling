@@ -2,8 +2,8 @@
 # Directories to be included                                       #
 ####################################################################
 
-# PROJECTNAME      = Algorithms
-PROJECTNAME      = Controller
+PROJECTNAME      = Algorithms
+# PROJECTNAME      = Controller
 
 USERINCLUDEPATHS = src
 SYSTEMDIR        = system

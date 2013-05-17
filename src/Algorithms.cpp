@@ -114,6 +114,23 @@ bool Algorithms::_mainstate()
 }
 
 
+float Algorithms::getLuminance()
+{
+	float _, __, solarCurrent;
+
+	confeh.getMeasurements( _, __, solarCurrent );
+
+#ifdef DEBUG
+	debug.printLine( "\tsolarCurrent: ", false );
+	debug.printFloat( solarCurrent , 6, false );
+	debug.printLine( "\n", true );
+#endif
+
+	// current radiation energy in Joule
+	return solarCurrent / .05;
+}
+
+
 void Algorithms::sendData( float )
 {
 #ifdef DEBUG

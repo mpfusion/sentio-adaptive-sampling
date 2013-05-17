@@ -90,13 +90,24 @@ private:
 	static time delayTime; ///< controls the sleep duration
 
 	/**
-	 * Sends the data to a remote location.
+	 * Derive luminance from the solar panel current.
 	 *
-	 * This function is currently not implemented.
+	 * Using the solar panel current to determine the luminance is a fast,
+	 * convenient and cheap method. The solar panel is always present and in
+	 * use anyway. However, the current depends on the battery level which
+	 * makes the measurement not as exact as using the Davis radiation sensor.
+	 *
+	 * @return Luminance radiation in joule.
 	 */
-	static void  sendData( float value );
+	static float getLuminance();
+
+	/**
+	 * Sends the data to a remote location via radio.
+	 *
+	 */
+	static void sendData( float value );
 	
-	static void  receiveData();
+	static void receiveData();
 
 	static INTERRUPT_CONFIG rtcInterruptConfig;
 
