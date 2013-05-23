@@ -23,7 +23,6 @@ class EWMA
 	unsigned int   bufferAverageElements;
 	         /* float bufferAverage[secondsPerDay/maxDutyCycle]; */
 
-	int   adaptiveSlices;
 	float weightingFactor;
 
 	HistoricalAverage <48, float> historicalAverage;
