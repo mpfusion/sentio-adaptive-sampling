@@ -55,6 +55,7 @@ void EWMA::calculateAdaptiveSlices()
 
 }
 
+void EWMA::initialize()
 {
 	historicalAverage.fill( Algorithms::getLuminance() );
 }

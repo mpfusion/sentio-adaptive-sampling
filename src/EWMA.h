@@ -36,6 +36,14 @@ public:
 		weightingFactor( .5 ),
 		adaptiveSlices( 1 )
 		{}
+	
+	/**
+	 * Fills the historical average array.
+	 *
+	 * The luminance is measured once and the circular buffer
+	 * `historicalAverage` is filled with the measured value.
+	 */
+	void initialize();
 
 	/**
 	 * Computes the number of slices for the next slot.

@@ -78,6 +78,8 @@ bool Algorithms::_initialState()
 	cc1101.setRfConfig();
 	cc1101.setAddress( _nodeID_algorithm );
 
+	ewma.initialize();
+
 #ifdef DEBUG
 	debug.printLine( "\n", true );
 	debug.printLine( "Algorithms initialised", true );
