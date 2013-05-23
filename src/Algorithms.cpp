@@ -8,15 +8,11 @@
 #include "Algorithms.h"
 #include "EWMA.h"
 
-#include <cmath>
-#include <cstdio>
-
 STATUS_BLOCK     Algorithms::myStatusBlock;
 INTERRUPT_CONFIG Algorithms::rtcInterruptConfig;
 
 Configuration Algorithms::config;
 
-/* EWMA Algorithms::ewma; */
 EWMA ewma;
 
 time Algorithms::baseTime( 0 );
@@ -93,6 +89,7 @@ bool Algorithms::_initialState()
 	return true;
 }
 
+
 bool Algorithms::_mainstate()
 {
 #ifdef DEBUG
@@ -101,8 +98,8 @@ bool Algorithms::_mainstate()
 
 	ewma.calculateAdaptiveSlices();
 
-	sendData( 42 );
-	receiveData();
+	/* sendData( 42 ); */
+	/* receiveData(); */
 
 #ifdef DEBUG
 	debug.printLine( "going to sleep for ", false );
@@ -170,6 +167,7 @@ void Algorithms::sendData( float )
 #endif
 
 }
+
 
 void Algorithms::receiveData()
 {
@@ -265,6 +263,7 @@ void Algorithms::_ODD_GPIO_InterruptHandler( uint32_t temp )
 
 	GPIO_IntClear( ~0 );
 }
+
 
 void Algorithms::_EVEN_GPIO_InterruptHandler( uint32_t )
 {

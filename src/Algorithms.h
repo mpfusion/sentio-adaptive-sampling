@@ -64,8 +64,6 @@ private:
 	static time baseTime;  ///< controls the starting value of the timer
 	static time delayTime; ///< controls the sleep duration
 
-	/* static EWMA ewma;      ///< Exponentially-Weighted Moving Average */
-
 	/**
 	 * Sends the data to a remote location via radio.
 	 *
