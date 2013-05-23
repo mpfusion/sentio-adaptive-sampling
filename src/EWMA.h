@@ -17,11 +17,8 @@ class EWMA
 	const unsigned int   secondsPerDay;           ///< value in @f$ s @f$
 	const unsigned int   minDutyCycle;            ///< value in @f$ s @f$
 	const unsigned int   maxDutyCycle;            ///< value in @f$ s @f$
-	const          float energyPerSamplingCycle;  ///< value in @f$ J @f$
-	const          float energyPerStorageCycle;   ///< value in @f$ J @f$
-
-	unsigned int   bufferAverageElements;
-	         /* float bufferAverage[secondsPerDay/maxDutyCycle]; */
+	               float energyPerSamplingCycle;  ///< value in @f$ J @f$
+	               float energyPerStorageCycle;   ///< value in @f$ J @f$
 
 	float weightingFactor;
 
