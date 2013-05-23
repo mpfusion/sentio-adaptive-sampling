@@ -1,5 +1,5 @@
 /*
- * ApplicationConfig.h
+ * EWMA.h
  *
  *  Created on: 2013-05-16
  *      Author: Marco Patzer
