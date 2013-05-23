@@ -55,13 +55,6 @@ void EWMA::calculateAdaptiveSlices()
 
 }
 
-EWMA::EWMA() :
-	secondsPerDay( 86400 ),
-	minDutyCycle( 1800 ),
-	maxDutyCycle( 300 ),
-	energyPerSamplingCycle( .0002 ),
-	energyPerStorageCycle( .00006 ),
-	adaptiveSlices( 1 )
 {
 	historicalAverage.fill( Algorithms::getLuminance() );
 }

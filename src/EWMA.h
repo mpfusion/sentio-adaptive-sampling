@@ -26,7 +26,16 @@ class EWMA
 
 public:
 
-	EWMA();
+	EWMA() :
+		
+		secondsPerDay( 86400 ),
+		minDutyCycle( 1800 ),
+		maxDutyCycle( 300 ),
+		energyPerSamplingCycle( .0002 ),
+		energyPerStorageCycle( .00006 ),
+		weightingFactor( .5 ),
+		adaptiveSlices( 1 )
+		{}
 
 	/**
 	 * Computes the number of slices for the next slot.
