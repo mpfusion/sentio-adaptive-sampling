@@ -104,11 +104,11 @@ bool Algorithms::_mainstate()
 
 #ifdef DEBUG
 	debug.printLine( "going to sleep for ", false );
-	debug.printFloat( config.sleep_time, 0, true );
+	debug.printFloat( config.sleepTime, 0, true );
 #endif
 
 	timer.setBaseTime( baseTime );
-	timer.setAlarmPeriod( config.sleep_time, alarm1, alarmMatchHour_Minutes_Seconds );
+	timer.setAlarmPeriod( config.sleepTime, alarm1, alarmMatchHour_Minutes_Seconds );
 	timer.resetInterrupts();
 	timer.setLowPowerMode();
 

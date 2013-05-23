@@ -13,37 +13,13 @@
 
 #include "time.h"
 #include "ApplicationConfig.h"
+#include "Configuration.h"
 
 
 enum ALGORITHMS
 {
 	initialState,
 	mainstate
-};
-
-struct Configuration
-{
-	unsigned int sleep_time;
-
-	/**
-	 * An energy storage level lower than this treats the storage as empty.
-	 *
-	 * Value in @f$ V @f$
-	 */
-	const float energyStorageEmpty;
-	
-	/**
-	 * An energy storage level higher than this treats the storage as full.
-	 *
-	 * Value in @f$ V @f$
-	 */
-	const float energyStorageFull;
-
-	Configuration() :
-		sleep_time( 10 ),
-		energyStorageEmpty( 1.0 ),
-		energyStorageFull( 2.5 )
-	{};
 };
 
 
