@@ -24,12 +24,20 @@ class EWMA
 
 	float weightingFactor;
 
+	/**
+	 * Variable for setting the duty-cycle.
+	 *
+	 * This is the value which is altered by the algorithm, it represents the
+	 * duty-cycle. It can not be smaller than one. One represents one slice
+	 * per slot.
+	 */
+	unsigned int adaptiveSlices;
+
 	HistoricalAverage <48, float> historicalAverage;
 
 public:
 
 	EWMA() :
-		
 		secondsPerDay( 86400 ),
 		minDutyCycle( 1800 ),
 		maxDutyCycle( 300 ),
