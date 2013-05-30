@@ -16,7 +16,6 @@ Configuration Algorithms::config;
 EWMA ewma;
 
 time Algorithms::baseTime( 0 );
-time Algorithms::delayTime( 10 );
 
 uint8_t payload[11];
 

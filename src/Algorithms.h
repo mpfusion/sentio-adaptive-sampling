@@ -62,7 +62,6 @@ private:
 	static void _EVEN_GPIO_InterruptHandler( uint32_t );
 
 	static time baseTime;  ///< controls the starting value of the timer
-	static time delayTime; ///< controls the sleep duration
 
 	/**
 	 * Sends the data to a remote location via radio.
