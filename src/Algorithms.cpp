@@ -97,19 +97,16 @@ bool Algorithms::_mainstate()
 #endif
 
 	ewma.calculateAdaptiveSlices();
+	ewma.setDutyCycle();
 
 	/* sendData( 42 ); */
 	/* receiveData(); */
 
 #ifdef DEBUG
 	debug.printLine( "going to sleep for ", false );
-	debug.printFloat( config.sleepTime, 0, true );
+	debug.printFloat( config.sleepTime, 0, false );
+	debug.printLine( " seconds", true );
 #endif
-
-	timer.setBaseTime( baseTime );
-	timer.setAlarmPeriod( config.sleepTime, alarm1, alarmMatchHour_Minutes_Seconds );
-	timer.resetInterrupts();
-	timer.setLowPowerMode();
 
 	myStatusBlock.nextState   = mainstate;
 	myStatusBlock.sleepMode   = 3;

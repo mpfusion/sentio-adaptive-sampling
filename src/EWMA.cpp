@@ -59,3 +59,13 @@ void EWMA::initialize()
 {
 	historicalAverage.fill( Algorithms::getLuminance() );
 }
+
+void EWMA::setDutyCycle()
+{
+	Algorithms::config.sleepTime = minDutyCycle / adaptiveSlices;
+
+	Algorithms::timer.setBaseTime( Algorithms::baseTime );
+	Algorithms::timer.setAlarmPeriod( Algorithms::config.sleepTime, alarm1, alarmMatchHour_Minutes_Seconds );
+	Algorithms::timer.resetInterrupts();
+	Algorithms::timer.setLowPowerMode();
+}

@@ -92,6 +92,8 @@ public:
 
 	ERROR_CODE executeApplication();
 	uint8_t    setupApplication();
+	
+	friend class EWMA;
 };
 
 #endif /* ALGORITHMS_H_ */

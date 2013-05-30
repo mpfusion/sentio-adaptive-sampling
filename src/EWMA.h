@@ -64,6 +64,8 @@ public:
 	 * the energy surplus or shortfall of the last slot.
 	 */
 	void calculateAdaptiveSlices();
+	
+	void setDutyCycle();
 };
 
 #endif /* end of include guard: EWMA_H_PB1IR8OZ */
