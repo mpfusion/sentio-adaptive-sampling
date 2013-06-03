@@ -6,17 +6,16 @@
  */
 
 #include "Algorithms.h"
-
-#include <cmath>
-#include <cstdio>
+#include "EWMA.h"
 
 STATUS_BLOCK     Algorithms::myStatusBlock;
 INTERRUPT_CONFIG Algorithms::rtcInterruptConfig;
 
 Configuration Algorithms::config;
 
+EWMA ewma;
+
 time Algorithms::baseTime( 0 );
-time Algorithms::delayTime( 10 );
 
 uint8_t payload[11];
 
@@ -74,6 +73,8 @@ bool Algorithms::_initialState()
 	cc1101.setRfConfig();
 	cc1101.setAddress( _nodeID_algorithm );
 
+	ewma.initialize();
+
 #ifdef DEBUG
 	debug.printLine( "\n", true );
 	debug.printLine( "Algorithms initialised", true );
@@ -87,24 +88,24 @@ bool Algorithms::_initialState()
 	return true;
 }
 
+
 bool Algorithms::_mainstate()
 {
 #ifdef DEBUG
 	debug.printLine( "In mainstate", true );
 #endif
 
-	sendData( 42 );
-	receiveData();
+	ewma.calculateAdaptiveSlices();
+	ewma.setDutyCycle();
+
+	/* sendData( 42 ); */
+	/* receiveData(); */
 
 #ifdef DEBUG
 	debug.printLine( "going to sleep for ", false );
-	debug.printFloat( config.sleep_time, 0, true );
+	debug.printFloat( config.sleepTime, 0, false );
+	debug.printLine( " seconds", true );
 #endif
-
-	timer.setBaseTime( baseTime );
-	timer.setAlarmPeriod( config.sleep_time, alarm1, alarmMatchHour_Minutes_Seconds );
-	timer.resetInterrupts();
-	timer.setLowPowerMode();
 
 	myStatusBlock.nextState   = mainstate;
 	myStatusBlock.sleepMode   = 3;
@@ -162,6 +163,7 @@ void Algorithms::sendData( float )
 #endif
 
 }
+
 
 void Algorithms::receiveData()
 {
@@ -257,6 +259,7 @@ void Algorithms::_ODD_GPIO_InterruptHandler( uint32_t temp )
 
 	GPIO_IntClear( ~0 );
 }
+
 
 void Algorithms::_EVEN_GPIO_InterruptHandler( uint32_t )
 {

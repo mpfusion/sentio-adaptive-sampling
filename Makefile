@@ -14,7 +14,12 @@ SYSTEMDIR        = system
 ####################################################################
 
 USER_C_SRC   =
-USER_CXX_SRC = $(USERINCLUDEPATHS)/$(PROJECTNAME).cpp
+
+USER_CXX_SRC = \
+	$(USERINCLUDEPATHS)/$(PROJECTNAME).cpp \
+	$(USERINCLUDEPATHS)/Configuration.cpp  \
+	$(USERINCLUDEPATHS)/EWMA.cpp           \
+
 USER_ASM_SRC =
 
 

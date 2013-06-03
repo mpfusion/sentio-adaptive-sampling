@@ -13,38 +13,13 @@
 
 #include "time.h"
 #include "ApplicationConfig.h"
-#include "HistoricalAverage.h"
+#include "Configuration.h"
 
 
 enum ALGORITHMS
 {
 	initialState,
 	mainstate
-};
-
-struct Configuration
-{
-	unsigned int sleep_time;
-
-	/**
-	 * An energy storage level lower than this treats the storage as empty.
-	 *
-	 * Value in @f$ V @f$
-	 */
-	const float energyStorageEmpty;
-	
-	/**
-	 * An energy storage level higher than this treats the storage as full.
-	 *
-	 * Value in @f$ V @f$
-	 */
-	const float energyStorageFull;
-
-	Configuration() :
-		sleep_time( 10 ),
-		energyStorageEmpty( 1.0 ),
-		energyStorageFull( 2.5 )
-	{};
 };
 
 
@@ -87,19 +62,6 @@ private:
 	static void _EVEN_GPIO_InterruptHandler( uint32_t );
 
 	static time baseTime;  ///< controls the starting value of the timer
-	static time delayTime; ///< controls the sleep duration
-
-	/**
-	 * Derive luminance from the solar panel current.
-	 *
-	 * Using the solar panel current to determine the luminance is a fast,
-	 * convenient and cheap method. The solar panel is always present and in
-	 * use anyway. However, the current depends on the battery level which
-	 * makes the measurement not as exact as using the Davis radiation sensor.
-	 *
-	 * @return Luminance radiation in joule.
-	 */
-	static float getLuminance();
 
 	/**
 	 * Sends the data to a remote location via radio.
@@ -115,8 +77,22 @@ public:
 	Algorithms();
 	~Algorithms() {}
 
+	/**
+	 * Derive luminance from the solar panel current.
+	 *
+	 * Using the solar panel current to determine the luminance is a fast,
+	 * convenient and cheap method. The solar panel is always present and in
+	 * use anyway. However, the current depends on the battery level which
+	 * makes the measurement not as exact as using the Davis radiation sensor.
+	 *
+	 * @return Luminance radiation in joule.
+	 */
+	static float getLuminance();
+
 	ERROR_CODE executeApplication();
 	uint8_t    setupApplication();
+	
+	friend class EWMA;
 };
 
 #endif /* ALGORITHMS_H_ */
