@@ -19,6 +19,7 @@ USER_CXX_SRC = \
 	$(USERINCLUDEPATHS)/$(PROJECTNAME).cpp \
 	$(USERINCLUDEPATHS)/Configuration.cpp  \
 	$(USERINCLUDEPATHS)/EWMA.cpp           \
+	$(USERINCLUDEPATHS)/WCMA.cpp           \
 
 USER_ASM_SRC =
 

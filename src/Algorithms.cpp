@@ -7,6 +7,7 @@
 
 #include "Algorithms.h"
 #include "EWMA.h"
+#include "WCMA.h"
 
 STATUS_BLOCK     Algorithms::myStatusBlock;
 INTERRUPT_CONFIG Algorithms::rtcInterruptConfig;
@@ -14,6 +15,7 @@ INTERRUPT_CONFIG Algorithms::rtcInterruptConfig;
 Configuration Algorithms::config;
 
 EWMA ewma;
+WCMA wcma;
 
 time Algorithms::baseTime( 0 );
 
@@ -74,6 +76,7 @@ bool Algorithms::_initialState()
 	cc1101.setAddress( _nodeID_algorithm );
 
 	ewma.initialize();
+	wcma.initialize();
 
 #ifdef DEBUG
 	debug.printLine( "\n", true );
