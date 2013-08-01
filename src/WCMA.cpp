@@ -12,7 +12,10 @@ unsigned int WCMA::adaptiveSlices = 1;
 
 void WCMA::initialize()
 {
-	/* historicalAverage.fill( Algorithms::getLuminance() ); */
+	float val = Algorithms::getLuminance();
+
+	for ( unsigned int i = 0; i < Configuration::retainDays; ++i )
+		energy_prediction_matrix[i].fill(val);
 }
 
 
@@ -45,12 +48,6 @@ float WCMA::gap( const int )
 float WCMA::nextPrediction( const int )
 {
 	return 0;
-}
-
-
-int WCMA::calculateAdaptiveSlices()
-{
-	return 1;
 }
 
 

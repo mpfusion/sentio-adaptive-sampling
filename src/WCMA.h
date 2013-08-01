@@ -18,12 +18,12 @@ typedef Array<float, Configuration::retainSamples> array_rs_t;
 class WCMA : public Configuration
 {
 	matrix_row_t energy_prediction_matrix[Configuration::retainDays];
-	array_rs_t sample_energy_quotient;
-	array_rs_t time_distance_weighting;
+	array_rs_t   sample_energy_quotient;
+	array_rs_t   time_distance_weighting;
 
 	matrix_row_t current_day_samples;
 
-	unsigned int sample_day;
+	unsigned int day_index;
 	unsigned int energy_current_slot;
 
 	/**
@@ -38,7 +38,7 @@ class WCMA : public Configuration
 public:
 
 	WCMA() :
-		sample_day( 0 )
+		day_index( 0 )
 	{}
 	
 	/**
