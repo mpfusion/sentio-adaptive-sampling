@@ -57,10 +57,10 @@ public:
 	 *
 	 * @f$ M_D @f$ in the formulas.
 	 *
-	 * @param The sample index of the current sample for this day.
+	 * @param index The sample index of the current sample for this day.
 	 * @return Mean value of the past days
 	 */
-	float meanPastDays( const int );
+	float meanPastDays( const int index );
 
 	/**
 	 * The quotient of the past days.
@@ -70,10 +70,10 @@ public:
 	 *
 	 * @f$ V_k=\frac{E(\ldots)}{M_D(\ldots)} @f$
 	 *
-	 * @param The sample index of the current sample for this day.
+	 * @param index The sample index of the current sample for this day.
 	 * @return Vector with `Configuration::retainSamples` quotient values
 	 */
-	array_rs_t pastDaysQuotient( const int );
+	array_rs_t pastDaysQuotient( const int index );
 
 	/**
 	 * The distance weighting vector.
@@ -83,26 +83,26 @@ public:
 	 *
 	 * @f$ P_K=\frac{k}{K} @f$
 	 *
-	 * @param The sample index of the current sample for this day.
+	 * @param index The sample index of the current sample for this day.
 	 * @return Vector with `Configuration::retainSamples` weighted distances
 	 */
-	array_rs_t distanceWeights( const int );
+	array_rs_t distanceWeights( const int index );
 
 	/**
 	 * @f$ gap_k=\frac{\vec{V}\times\vec{P}}{\sum P}@f$
 	 *
-	 * @param The sample index of the current sample for this day.
+	 * @param index The sample index of the current sample for this day.
 	 * @return GAP value
 	 */
-	float gap( const int );
+	float gap( const int index );
 
 	/**
 	 * Calculates the prediction for the next slot.
 	 *
-	 * @param The sample index of the current sample for this day.
+	 * @param index The sample index of the current sample for this day.
 	 * @return Predicted value for the next slot
 	 */
-	float nextPrediction( const int );
+	float nextPrediction( const int index );
 
 	/**
 	 * Computes the number of slices for the next slot.
