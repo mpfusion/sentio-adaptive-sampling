@@ -17,9 +17,9 @@ typedef Array<float, Configuration::retainSamples> array_rs_t;
 
 class WCMA : public Configuration
 {
-	matrix_row_t energy_prediction_matrix[Configuration::retainDays];
+	matrix_row_t energy_prediction_matrix[retainDays];
 	array_rs_t   sample_energy_quotient;
-	array_rs_t   time_distance_weighting;
+	array_rs_t   time_distance_weight;
 
 	matrix_row_t current_day_samples;
 
@@ -57,10 +57,9 @@ public:
 	 *
 	 * @f$ M_D @f$ in the formulas.
 	 *
-	 * @param index The sample index of the current sample for this day.
 	 * @return Mean value of the past days
 	 */
-	float meanPastDays( const int index );
+	float meanPastDays();
 
 	/**
 	 * The quotient of the past days.
@@ -70,10 +69,9 @@ public:
 	 *
 	 * @f$ V_k=\frac{E(\ldots)}{M_D(\ldots)} @f$
 	 *
-	 * @param index The sample index of the current sample for this day.
 	 * @return Vector with `Configuration::retainSamples` quotient values
 	 */
-	array_rs_t pastDaysQuotient( const int index );
+	array_rs_t pastDaysQuotient();
 
 	/**
 	 * The distance weighting vector.
@@ -83,26 +81,23 @@ public:
 	 *
 	 * @f$ P_K=\frac{k}{K} @f$
 	 *
-	 * @param index The sample index of the current sample for this day.
 	 * @return Vector with `Configuration::retainSamples` weighted distances
 	 */
-	array_rs_t distanceWeights( const int index );
+	array_rs_t distanceWeights();
 
 	/**
 	 * @f$ gap_k=\frac{\vec{V}\times\vec{P}}{\sum P}@f$
 	 *
-	 * @param index The sample index of the current sample for this day.
 	 * @return GAP value
 	 */
-	float gap( const int index );
+	float gap();
 
 	/**
 	 * Calculates the prediction for the next slot.
 	 *
-	 * @param index The sample index of the current sample for this day.
 	 * @return Predicted value for the next slot
 	 */
-	float nextPrediction( const int index );
+	float nextPrediction();
 
 	/**
 	 * Computes the number of slices for the next slot.

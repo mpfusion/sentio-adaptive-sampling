@@ -19,33 +19,33 @@ void WCMA::initialize()
 }
 
 
-float WCMA::meanPastDays( const int )
+float WCMA::meanPastDays()
 {
 	return 0;
 }
 
 
-array_rs_t WCMA::pastDaysQuotient( const int )
+array_rs_t WCMA::pastDaysQuotient()
 {
 	array_rs_t a;
 	return a;
 }
 
 
-array_rs_t WCMA::distanceWeights( const int )
+array_rs_t WCMA::distanceWeights()
 {
 	array_rs_t a;
 	return a;
 }
 
 
-float WCMA::gap( const int )
+float WCMA::gap()
 {
 	return 0;
 }
 
 
-float WCMA::nextPrediction( const int )
+float WCMA::nextPrediction()
 {
 	return 0;
 }

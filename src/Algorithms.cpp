@@ -98,8 +98,8 @@ bool Algorithms::_mainstate()
 	debug.printLine( "In mainstate", true );
 #endif
 
-	ewma.calculateAdaptiveSlices();
-	ewma.setDutyCycle();
+	wcma.calculateAdaptiveSlices();
+	wcma.setDutyCycle();
 
 	/* sendData( 42 ); */
 	/* receiveData(); */
