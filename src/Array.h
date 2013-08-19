@@ -186,6 +186,29 @@ public:
 	}
 
 	/**
+	 * Computes the sum of the first or last @f$ n @f$ values of the array.
+	 *
+	 * If @f$ n @f$ is positive, then the first values, from @f$ 0 @f$ up to
+	 * @f$ n @f$, are calculated. If @f$ n @f$ is negative, then the last
+	 * values, from @f$ N+n @f$ up to @f$ N @f$ are calculated.
+	 *
+	 * @param @f$ n @f$
+	 * @return The sum of the first or last @f$ n @f$ values of the array.
+	 */
+	const T sum( const int n ) const
+	{
+		T t = 0;
+
+		if ( n >= 0 )
+			for ( std::size_t i = 0; i < static_cast<unsigned int>(n); ++i )
+				t += *( buffer + i );
+		else
+			for ( std::size_t i = N+n; i < N; ++i )
+				t += *( buffer + i );
+		return t;
+	}
+
+	/**
 	 * Computes the average over all values in the array.
 	 *
 	 * If less values are stored than the capacity, the returned value will be
