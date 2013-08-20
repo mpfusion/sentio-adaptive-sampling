@@ -79,3 +79,12 @@ void WCMA::setDutyCycle()
 	Algorithms::timer.resetInterrupts();
 	Algorithms::timer.setLowPowerMode();
 }
+
+
+float WCMA::last_24h_avg() const
+{
+	const float curr_day = current_day_samples.sum( day_index );
+	const float last_day = energy_prediction_matrix[0].sum( -slotsPerDay+day_index );
+
+	return ( curr_day + last_day ) / slotsPerDay;
+}

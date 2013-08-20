@@ -115,6 +115,14 @@ public:
 	 * Set the sleep time
 	 */
 	void setDutyCycle();
+
+	/**
+	 * Average energy per slot for the last 24 hours.
+	 *
+	 * @return Average energy per slot for the last 24 hours.
+	 */
+	float last_24h_avg() const;
+
 };
 
 #endif /* end of include guard: WCMA_H_0INEYXJP */
