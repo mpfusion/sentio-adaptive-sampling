@@ -19,7 +19,7 @@ class WCMA : public Configuration
 {
 	matrix_row_t energy_prediction_matrix[retainDays];
 	array_rs_t   sample_energy_quotient;
-	array_rs_t   time_distance_weight;
+	array_rs_t   time_distance_weight;  //< @f$ P_k=\frac{k}{K} @f$
 
 	matrix_row_t current_day_samples;
 
@@ -72,18 +72,6 @@ public:
 	 * @return Vector with `Configuration::retainSamples` quotient values
 	 */
 	array_rs_t pastDaysQuotient();
-
-	/**
-	 * The distance weighting vector.
-	 *
-	 * Weights the @f$ V_k @f$ values with the distance to the actuaal point
-	 * in time.
-	 *
-	 * @f$ P_K=\frac{k}{K} @f$
-	 *
-	 * @return Vector with `Configuration::retainSamples` weighted distances
-	 */
-	array_rs_t distanceWeights();
 
 	/**
 	 * @f$ gap_k=\frac{\vec{V}\times\vec{P}}{\sum P}@f$

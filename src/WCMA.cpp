@@ -14,10 +14,11 @@ void WCMA::initialize()
 {
 	float val = Algorithms::getLuminance();
 
-	for ( unsigned int i = 0; i < Configuration::retainDays; ++i )
+	for ( unsigned int i = 0; i < retainDays; ++i )
 		energy_prediction_matrix[i].fill(val);
-}
 
+	for ( unsigned int i = 0; i < time_distance_weight.size(); ++i )
+		time_distance_weight[i] = static_cast<float>( i + 1 ) / retainSamples;
 
 float WCMA::meanPastDays()
 {
@@ -32,7 +33,7 @@ array_rs_t WCMA::pastDaysQuotient()
 }
 
 
-array_rs_t WCMA::distanceWeights()
+array_rs_t WCMA::pastDaysQuotient()
 {
 	array_rs_t a;
 	return a;
