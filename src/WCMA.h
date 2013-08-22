@@ -59,7 +59,7 @@ public:
 	 *
 	 * @return Mean value of the past days
 	 */
-	float meanPastDays();
+	float meanPastDays( const unsigned int day ) const;
 
 	/**
 	 * The quotient of the past days.

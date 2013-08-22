@@ -26,10 +26,14 @@ float WCMA::meanPastDays()
 }
 
 
-array_rs_t WCMA::pastDaysQuotient()
+float WCMA::meanPastDays( const unsigned int day ) const
 {
-	array_rs_t a;
-	return a;
+	float mean = 0;
+
+	for ( unsigned int i = 0; i < retainDays; ++i )
+		mean += energy_prediction_matrix[i][day];
+
+	return mean/retainDays;
 }
 
 
