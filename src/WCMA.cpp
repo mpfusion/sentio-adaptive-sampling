@@ -36,9 +36,8 @@ float WCMA::meanPastDays( const unsigned int day ) const
 array_rs_t WCMA::pastDaysQuotient() const
 {
 	array_rs_t quot;
-	unsigned int index = day_index - retainSamples > 0 ? day_index - retainSamples : 0;
 
-	for ( unsigned int i = 0; i < retainDays; ++i, ++index )
+	for ( unsigned int i = retainSamples - 1, index = day_index; i + 1; --i, index = index ? index - 1 : slotsPerDay - 1 )
 		quot[i] = current_day_samples[index]/meanPastDays( index );
 
 	return quot;
