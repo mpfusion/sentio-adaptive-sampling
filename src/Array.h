@@ -239,6 +239,25 @@ public:
 		return n == 0 ? 0 : sum( n ) / abs( n );
 	}
 
+	/**
+	 * Computes the dot product.
+	 *
+	 * If @f$ n @f$ is positive, then the first values, from @f$ 0 @f$ up to
+	 * @f$ n @f$, are averaged. If @f$ n @f$ is negative, then the last
+	 * values, from @f$ N+n @f$ up to @f$ N @f$ are averaged.
+	 *
+	 * @param The array to multiply with.
+	 * @return The dot product of both arrays of type @f$ T @f$.
+	 */
+	const T dotproduct( const Array<T, N> &second ) const
+	{
+		T t = 0;
+		for ( std::size_t i = 0; i < N; ++i )
+			t += *( buffer + i ) * second[i];
+		return t;
+	}
+
+
 };
 
 #endif /* end of include guard: ARRAY_H_DAHB3GQW */
