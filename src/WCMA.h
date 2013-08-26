@@ -78,7 +78,7 @@ public:
 	 *
 	 * @return GAP value
 	 */
-	float gap();
+	float gap() const;
 
 	/**
 	 * Calculates the prediction for the next slot.

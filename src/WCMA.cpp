@@ -19,10 +19,6 @@ void WCMA::initialize()
 
 	for ( unsigned int i = 0; i < time_distance_weight.size(); ++i )
 		time_distance_weight[i] = static_cast<float>( i + 1 ) / retainSamples;
-
-float WCMA::meanPastDays()
-{
-	return 0;
 }
 
 
@@ -49,9 +45,9 @@ array_rs_t WCMA::pastDaysQuotient() const
 }
 
 
-float WCMA::gap()
+float WCMA::gap() const
 {
-	return 0;
+	return sample_energy_quotient.dotproduct( time_distance_weight ) / time_distance_weight.sum();
 }
 
 
