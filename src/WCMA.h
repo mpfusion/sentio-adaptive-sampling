@@ -71,7 +71,7 @@ public:
 	 *
 	 * @return Vector with `Configuration::retainSamples` quotient values
 	 */
-	array_rs_t pastDaysQuotient();
+	array_rs_t pastDaysQuotient() const;
 
 	/**
 	 * @f$ gap_k=\frac{\vec{V}\times\vec{P}}{\sum P}@f$
