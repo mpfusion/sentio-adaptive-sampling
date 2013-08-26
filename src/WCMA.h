@@ -8,6 +8,7 @@
 #ifndef WCMA_H_0INEYXJP
 #define WCMA_H_0INEYXJP
 
+#include <cmath>
 #include "Algorithms.h"
 #include "Configuration.h"
 #include "Array.h"
@@ -33,7 +34,7 @@ class WCMA : public Configuration
 	 * duty-cycle. It can not be smaller than one. One represents one slice
 	 * per slot.
 	 */
-	static unsigned int adaptiveSlices;
+	static unsigned int adaptive_slices;
 
 public:
 
@@ -85,7 +86,7 @@ public:
 	 *
 	 * @return Predicted value for the next slot
 	 */
-	float nextPrediction();
+	float nextPrediction() const;
 
 	/**
 	 * Computes the number of slices for the next slot.
@@ -95,9 +96,9 @@ public:
 	 * average into account as well as the current energy storage level and
 	 * the energy surplus or shortfall of the last slot.
 	 *
-	 * @return Number of slices in the next slot
+	 * It updates the variable `adaptive_slices`.
 	 */
-	int calculateAdaptiveSlices();
+	void calculateAdaptiveSlices();
 
 	/**
 	 * Set the sleep time

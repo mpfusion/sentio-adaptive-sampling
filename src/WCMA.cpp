@@ -7,14 +7,14 @@
 
 #include "WCMA.h"
 
-unsigned int WCMA::adaptiveSlices = 1;
+unsigned int WCMA::adaptive_slices = 1;
 
 
 void WCMA::initialize()
 {
 	float val = Algorithms::getLuminance();
 
-	for ( unsigned int i = 0; i < retainDays; ++i )
+	for ( unsigned int i = 0; i < energy_prediction_matrix[0].size(); ++i )
 		energy_prediction_matrix[i].fill(val);
 
 	for ( unsigned int i = 0; i < time_distance_weight.size(); ++i )
@@ -51,31 +51,32 @@ float WCMA::gap() const
 }
 
 
-float WCMA::nextPrediction()
+float WCMA::nextPrediction() const
 {
-	float nextval = weightingFactor * energy_current_slot + gap() * ( 1 - weightingFactor ) * meanPastDays();
-	
-	++day_index;
-
-	return nextval;
+	return weightingFactor * energy_current_slot + gap() * ( 1 - weightingFactor ) * meanPastDays( day_index );
 }
 
 
-int WCMA::calculateAdaptiveSlices()
+void WCMA::calculateAdaptiveSlices()
 {
 #ifdef DEBUG
 	DriverInterface::debug.printLine( "Entered: calculateAdaptiveSlices", true );
 #endif
 
 	energy_current_slot   = Algorithms::getLuminance();
+	sample_energy_quotient = pastDaysQuotient();
 	const float next_pred = nextPrediction();
+
+	adaptive_slices = ceil( ( last_24h_avg() - energyPerStorageCycle ) / energyPerSamplingCycle + 1 );
+
+	if ( adaptive_slices < 1 )
+		adaptive_slices = 1;
 
 #ifdef DEBUG
 	DriverInterface::debug.printLine( "Next predicted value: ", false );
 	DriverInterface::debug.printFloat( next_pred, 5, true );
 #endif
 
-	return 1;
 }
 
 
