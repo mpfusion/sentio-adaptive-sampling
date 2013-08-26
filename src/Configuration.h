@@ -28,7 +28,7 @@ struct Configuration
 	 */
 	static const unsigned int slotsPerDay = 48;
 
-	static unsigned int weightingFactor;  ///< @f$ =\alpha @f$
+	static float weightingFactor;  ///< @f$ =\alpha @f$
 
 	/**
 	 * Number of rows in the energy prediction matrix. Samples for this many
