@@ -19,6 +19,8 @@ void WCMA::initialize()
 
 	for ( unsigned int i = 0; i < time_distance_weight.size(); ++i )
 		time_distance_weight[i] = static_cast<float>( i + 1 ) / retainSamples;
+
+	day_index = 0;
 }
 
 
@@ -77,7 +79,6 @@ void WCMA::calculateAdaptiveSlices()
 	energy_prediction_matrix[2] = arr;
 	energy_prediction_matrix[3] = arr_d;
 	current_day_samples = arr_d;
-	day_index = 1;
 
 	/* debug */
 	energy_prediction_matrix[0][0] = 12;
@@ -161,6 +162,11 @@ void WCMA::calculateAdaptiveSlices()
 	DriverInterface::debug.printLine( "adaptive_slices: ", false );
 	DriverInterface::debug.printFloat( adaptive_slices, 8, true );
 #endif
+
+	if ( day_index == slotsPerDay - 1 )
+		day_index = 0;
+	else
+		++day_index;
 }
 
 

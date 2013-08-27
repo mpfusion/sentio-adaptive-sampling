@@ -38,9 +38,7 @@ class WCMA : public Configuration
 
 public:
 
-	WCMA() :
-		day_index( 0 )
-	{}
+	WCMA() {}
 	
 	/**
 	 * Fills the arrays and energy prediction matrix with sensible values.
