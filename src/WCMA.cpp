@@ -14,8 +14,10 @@ void WCMA::initialize()
 {
 	float val = Algorithms::getLuminance();
 
+	current_day_samples.fill( val );
+
 	for ( size_t i = 0; i < energy_prediction_matrix[0].size(); ++i )
-		energy_prediction_matrix[i].fill(val);
+		energy_prediction_matrix[i].fill( val );
 
 	for ( size_t i = 0; i < time_distance_weight.size(); ++i )
 		time_distance_weight[i] = static_cast<float>( i + 1 ) / retainSamples;
@@ -31,7 +33,7 @@ float WCMA::meanPastDays( const size_t day ) const
 	for ( size_t i = 0; i < retainDays; ++i )
 		mean += energy_prediction_matrix[i][day];
 
-	return mean/retainDays;
+	return mean / retainDays;
 }
 
 
@@ -40,7 +42,7 @@ array_rs_t WCMA::pastDaysQuotient() const
 	array_rs_t quot;
 
 	for ( size_t i = retainSamples - 1, index = day_index; i + 1; --i, index = index ? index - 1 : slotsPerDay - 1 )
-		quot[i] = current_day_samples[index]/meanPastDays( index );
+		quot[i] = current_day_samples[index] / meanPastDays( index );
 
 	return quot;
 }
@@ -70,8 +72,8 @@ void WCMA::calculateAdaptiveSlices()
 
 	/* debug */
 	for ( size_t i = 0; i < arr.size(); ++i )
-		arr[i] = i,
-		arr_d[i] = 2*i;
+		arr[i]   = i,
+		arr_d[i] = 2 * i;
 
 	/* debug */
 	energy_prediction_matrix[0] = arr;
