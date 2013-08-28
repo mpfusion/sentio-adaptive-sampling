@@ -14,21 +14,21 @@ void WCMA::initialize()
 {
 	float val = Algorithms::getLuminance();
 
-	for ( unsigned int i = 0; i < energy_prediction_matrix[0].size(); ++i )
+	for ( size_t i = 0; i < energy_prediction_matrix[0].size(); ++i )
 		energy_prediction_matrix[i].fill(val);
 
-	for ( unsigned int i = 0; i < time_distance_weight.size(); ++i )
+	for ( size_t i = 0; i < time_distance_weight.size(); ++i )
 		time_distance_weight[i] = static_cast<float>( i + 1 ) / retainSamples;
 
 	day_index = 0;
 }
 
 
-float WCMA::meanPastDays( const unsigned int day ) const
+float WCMA::meanPastDays( const size_t day ) const
 {
 	float mean = 0;
 
-	for ( unsigned int i = 0; i < retainDays; ++i )
+	for ( size_t i = 0; i < retainDays; ++i )
 		mean += energy_prediction_matrix[i][day];
 
 	return mean/retainDays;
@@ -39,7 +39,7 @@ array_rs_t WCMA::pastDaysQuotient() const
 {
 	array_rs_t quot;
 
-	for ( unsigned int i = retainSamples - 1, index = day_index; i + 1; --i, index = index ? index - 1 : slotsPerDay - 1 )
+	for ( size_t i = retainSamples - 1, index = day_index; i + 1; --i, index = index ? index - 1 : slotsPerDay - 1 )
 		quot[i] = current_day_samples[index]/meanPastDays( index );
 
 	return quot;
@@ -69,7 +69,7 @@ void WCMA::calculateAdaptiveSlices()
 	Array<float, slotsPerDay> arr_d;
 
 	/* debug */
-	for ( std::size_t i = 0; i < arr.size(); ++i )
+	for ( size_t i = 0; i < arr.size(); ++i )
 		arr[i] = i,
 		arr_d[i] = 2*i;
 
@@ -116,7 +116,7 @@ void WCMA::calculateAdaptiveSlices()
 	/* debug */
 	for ( int i = retainDays - 1; i >= 0; --i )
 	{
-		for ( unsigned int j = 0; j < energy_prediction_matrix[0].size(); ++j )
+		for ( size_t j = 0; j < energy_prediction_matrix[0].size(); ++j )
 			DriverInterface::debug.printFloat( energy_prediction_matrix[i][j], 2, false ),
 			DriverInterface::debug.printLine( " ", false );
 		DriverInterface::debug.printLine( " ", true );
@@ -129,21 +129,21 @@ void WCMA::calculateAdaptiveSlices()
 
 	/* debug */
 	DriverInterface::debug.printLine( "current_day_samples: ", true );
-	for ( unsigned int i = 0; i < energy_prediction_matrix[0].size(); ++i )
+	for ( size_t i = 0; i < energy_prediction_matrix[0].size(); ++i )
 		DriverInterface::debug.printFloat( current_day_samples[i], 2, false ),
 		DriverInterface::debug.printLine( " ", false );
 	DriverInterface::debug.printLine( "\n", true );
 
 	/* debug */
 	DriverInterface::debug.printLine( "time_distance_weight: ", true );
-	for ( unsigned int i = 0; i < retainSamples; ++i )
+	for ( size_t i = 0; i < retainSamples; ++i )
 		DriverInterface::debug.printFloat( time_distance_weight[i], 3, false ),
 		DriverInterface::debug.printLine( " ", false );
 	DriverInterface::debug.printLine( "\n", true );
 
 	/* debug */
 	DriverInterface::debug.printLine( "sample_energy_quotient: ", true );
-	for ( unsigned int i = 0; i < retainSamples; ++i )
+	for ( size_t i = 0; i < retainSamples; ++i )
 		DriverInterface::debug.printFloat( sample_energy_quotient[i], 3, false ),
 		DriverInterface::debug.printLine( " ", false );
 	DriverInterface::debug.printLine( "\n", true );
@@ -181,7 +181,7 @@ void WCMA::setDutyCycle()
 float WCMA::last_24h_avg() const
 {
 	const float curr_day = current_day_samples.sum( day_index );
-	const float last_day = energy_prediction_matrix[0].sum( -slotsPerDay+day_index );
+	const float last_day = energy_prediction_matrix[0].sum( -slotsPerDay + day_index );
 
 	return ( curr_day + last_day ) / slotsPerDay;
 }

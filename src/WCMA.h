@@ -58,7 +58,7 @@ public:
 	 *
 	 * @return Mean value of the past days
 	 */
-	float meanPastDays( const unsigned int day ) const;
+	float meanPastDays( const size_t day ) const;
 
 	/**
 	 * The quotient of the past days.
