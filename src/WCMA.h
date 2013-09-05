@@ -110,6 +110,15 @@ public:
 	 */
 	float last_24h_avg() const;
 
+	/**
+	 * Inserts the current day's array into the energy prediction matrix.
+	 *
+	 * After 24 hours have been passed, the arrays in the energy prediction
+	 * matrix are shifted up by one index and the current day's array is
+	 * inserted to represent the last day's history.
+	 */
+	void reorder_prediction_matrix();
+
 };
 
 #endif /* end of include guard: WCMA_H_0INEYXJP */

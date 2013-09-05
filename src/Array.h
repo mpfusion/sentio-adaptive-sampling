@@ -257,7 +257,6 @@ public:
 		return t;
 	}
 
-
 };
 
 #endif /* end of include guard: ARRAY_H_DAHB3GQW */

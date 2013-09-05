@@ -75,33 +75,40 @@ void WCMA::calculateAdaptiveSlices()
 		arr[i]   = i,
 		arr_d[i] = 2 * i;
 
-	/* debug */
-	energy_prediction_matrix[0] = arr;
-	energy_prediction_matrix[1] = arr_d;
-	energy_prediction_matrix[2] = arr;
-	energy_prediction_matrix[3] = arr_d;
-	current_day_samples = arr_d;
+	static bool only_first = true;
 
-	/* debug */
-	energy_prediction_matrix[0][0] = 12;
-	energy_prediction_matrix[1][0] = 17;
-	energy_prediction_matrix[2][0] = 7;
-	energy_prediction_matrix[3][0] = 4;
-	current_day_samples[0] = 4;
+	if ( only_first )
+	{
+		/* debug */
+		energy_prediction_matrix[0] = arr;
+		energy_prediction_matrix[1] = arr_d;
+		energy_prediction_matrix[2] = arr;
+		energy_prediction_matrix[3] = arr_d;
+		current_day_samples = arr_d;
 
-	/* debug */
-	energy_prediction_matrix[0][1] = 18;
-	energy_prediction_matrix[1][1] = 19;
-	energy_prediction_matrix[2][1] = 12;
-	energy_prediction_matrix[3][1] = 10;
-	current_day_samples[1] = 10;
+		/* debug */
+		energy_prediction_matrix[0][0] = 12;
+		energy_prediction_matrix[1][0] = 17;
+		energy_prediction_matrix[2][0] = 7;
+		energy_prediction_matrix[3][0] = 4;
+		current_day_samples[0] = 4;
 
-	/* debug */
-	energy_prediction_matrix[0][47] = 8;
-	energy_prediction_matrix[1][47] = 9;
-	energy_prediction_matrix[2][47] = 8;
-	energy_prediction_matrix[3][47] = 3;
-	current_day_samples[47] = 6;
+		/* debug */
+		energy_prediction_matrix[0][1] = 18;
+		energy_prediction_matrix[1][1] = 19;
+		energy_prediction_matrix[2][1] = 12;
+		energy_prediction_matrix[3][1] = 10;
+		current_day_samples[1] = 10;
+
+		/* debug */
+		energy_prediction_matrix[0][47] = 8;
+		energy_prediction_matrix[1][47] = 9;
+		energy_prediction_matrix[2][47] = 8;
+		energy_prediction_matrix[3][47] = 3;
+		current_day_samples[47] = 6;
+	}
+
+	only_first = false;
 
 	energy_current_slot    = Algorithms::getLuminance();
 	sample_energy_quotient = pastDaysQuotient();
@@ -166,6 +173,7 @@ void WCMA::calculateAdaptiveSlices()
 #endif
 
 	if ( day_index == slotsPerDay - 1 )
+		reorder_prediction_matrix(),
 		day_index = 0;
 	else
 		++day_index;
@@ -182,8 +190,19 @@ void WCMA::setDutyCycle()
 
 float WCMA::last_24h_avg() const
 {
-	const float curr_day = current_day_samples.sum( day_index );
-	const float last_day = energy_prediction_matrix[0].sum( -slotsPerDay + day_index );
+	/**
+	 * After the `current_day_samples` array is copied into the energy
+	 * prediction matrix, the old values are not being purged, thence they
+	 * still reside in the `current_day_samples` array and it can simply be
+	 * averaged.
+	 */
+	return current_day_samples.average();
+}
 
-	return ( curr_day + last_day ) / slotsPerDay;
+void WCMA::reorder_prediction_matrix()
+{
+	for ( size_t i = retainDays - 1; i; --i )
+		energy_prediction_matrix[i] = energy_prediction_matrix[i - 1];
+
+	energy_prediction_matrix[0] = current_day_samples;
 }
