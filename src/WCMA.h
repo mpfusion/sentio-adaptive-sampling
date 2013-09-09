@@ -25,7 +25,9 @@ class WCMA : public Configuration
 	matrix_row_t current_day_samples;
 
 	unsigned int day_index;
-	unsigned int energy_current_slot;
+	unsigned int current_slice;
+
+	float energy_current_slot;
 
 	/**
 	 * Variable for setting the duty-cycle.
@@ -118,6 +120,15 @@ public:
 	 * inserted to represent the last day's history.
 	 */
 	void reorder_prediction_matrix();
+
+	/**
+	 * Inserts the current day's array into the energy prediction matrix.
+	 *
+	 * After 24 hours have been passed, the arrays in the energy prediction
+	 * matrix are shifted up by one index and the current day's array is
+	 * inserted to represent the last day's history.
+	 */
+	float do_all_the_magic();
 
 };
 

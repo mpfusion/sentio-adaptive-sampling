@@ -98,8 +98,10 @@ bool Algorithms::_mainstate()
 	debug.printLine( "In mainstate", true );
 #endif
 
-	wcma.calculateAdaptiveSlices();
-	wcma.setDutyCycle();
+	const float energy_current_slice = wcma.do_all_the_magic();
+
+	DriverInterface::debug.printLine( "energy_current_slice: ", false );
+	DriverInterface::debug.printFloat( energy_current_slice, 5, true );
 
 	/* sendData( 42 ); */
 	/* receiveData(); */
@@ -123,12 +125,6 @@ float Algorithms::getLuminance()
 	float _, __, solarCurrent;
 
 	confeh.getMeasurements( _, __, solarCurrent );
-
-#ifdef DEBUG
-	debug.printLine( "\tsolarCurrent: ", false );
-	debug.printFloat( solarCurrent , 6, false );
-	debug.printLine( "\n", true );
-#endif
 
 	// current radiation energy in Joule
 	return solarCurrent / .05;

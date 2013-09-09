@@ -10,7 +10,7 @@
 unsigned int   Configuration::sleepTime       = 10;
 float Configuration::weightingFactor          = .5;
 float Configuration::energyPerSamplingCycle   = .0002;
-float Configuration::energyPerStorageCycle    = .00006;
+float Configuration::energyPerStorageCycle    = .04;
 const float Configuration::energyStorageEmpty = 1.0;
 const float Configuration::energyStorageFull  = 2.5;
 

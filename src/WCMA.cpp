@@ -22,7 +22,8 @@ void WCMA::initialize()
 	for ( size_t i = 0; i < time_distance_weight.size(); ++i )
 		time_distance_weight[i] = static_cast<float>( i + 1 ) / retainSamples;
 
-	day_index = 0;
+	day_index     = 0;
+	current_slice = 0;
 }
 
 
@@ -66,55 +67,56 @@ void WCMA::calculateAdaptiveSlices()
 	DriverInterface::debug.printLine( "Entered: calculateAdaptiveSlices", true );
 #endif
 
-	/* debug */
-	Array<float, slotsPerDay> arr;
-	Array<float, slotsPerDay> arr_d;
+	/* /1* debug *1/ */
+	/* Array<float, slotsPerDay> arr; */
+	/* Array<float, slotsPerDay> arr_d; */
 
-	/* debug */
-	for ( size_t i = 0; i < arr.size(); ++i )
-		arr[i]   = i,
-		arr_d[i] = 2 * i;
+	/* /1* debug *1/ */
+	/* for ( size_t i = 0; i < arr.size(); ++i ) */
+	/* 	arr[i]   = i, */
+	/* 	arr_d[i] = 2 * i; */
 
-	static bool only_first = true;
+	/* static bool only_first = true; */
 
-	if ( only_first )
-	{
-		/* debug */
-		energy_prediction_matrix[0] = arr;
-		energy_prediction_matrix[1] = arr_d;
-		energy_prediction_matrix[2] = arr;
-		energy_prediction_matrix[3] = arr_d;
-		current_day_samples = arr_d;
+	/* if ( only_first ) */
+	/* { */
+	/* 	/1* debug *1/ */
+	/* 	energy_prediction_matrix[0] = arr; */
+	/* 	energy_prediction_matrix[1] = arr_d; */
+	/* 	energy_prediction_matrix[2] = arr; */
+	/* 	energy_prediction_matrix[3] = arr_d; */
+	/* 	current_day_samples = arr_d; */
 
-		/* debug */
-		energy_prediction_matrix[0][0] = 12;
-		energy_prediction_matrix[1][0] = 17;
-		energy_prediction_matrix[2][0] = 7;
-		energy_prediction_matrix[3][0] = 4;
-		current_day_samples[0] = 4;
+	/* 	/1* debug *1/ */
+	/* 	energy_prediction_matrix[0][0] = 12; */
+	/* 	energy_prediction_matrix[1][0] = 17; */
+	/* 	energy_prediction_matrix[2][0] = 7; */
+	/* 	energy_prediction_matrix[3][0] = 4; */
+	/* 	current_day_samples[0] = 4; */
 
-		/* debug */
-		energy_prediction_matrix[0][1] = 18;
-		energy_prediction_matrix[1][1] = 19;
-		energy_prediction_matrix[2][1] = 12;
-		energy_prediction_matrix[3][1] = 10;
-		current_day_samples[1] = 10;
+	/* 	/1* debug *1/ */
+	/* 	energy_prediction_matrix[0][1] = 18; */
+	/* 	energy_prediction_matrix[1][1] = 19; */
+	/* 	energy_prediction_matrix[2][1] = 12; */
+	/* 	energy_prediction_matrix[3][1] = 10; */
+	/* 	current_day_samples[1] = 10; */
 
-		/* debug */
-		energy_prediction_matrix[0][47] = 8;
-		energy_prediction_matrix[1][47] = 9;
-		energy_prediction_matrix[2][47] = 8;
-		energy_prediction_matrix[3][47] = 3;
-		current_day_samples[47] = 6;
-	}
+	/* 	/1* debug *1/ */
+	/* 	energy_prediction_matrix[0][47] = 8; */
+	/* 	energy_prediction_matrix[1][47] = 9; */
+	/* 	energy_prediction_matrix[2][47] = 8; */
+	/* 	energy_prediction_matrix[3][47] = 3; */
+	/* 	current_day_samples[47] = 6; */
+	/* } */
 
-	only_first = false;
+	/* only_first = false; */
 
-	energy_current_slot    = Algorithms::getLuminance();
-	sample_energy_quotient = pastDaysQuotient();
-	const float next_pred  = nextPrediction();
+	energy_current_slot            = Algorithms::getLuminance();
+	current_day_samples[day_index] = energy_current_slot;
+	sample_energy_quotient         = pastDaysQuotient();
+	const float next_pred          = nextPrediction();
 
-	adaptive_slices = ceil( ( last_24h_avg() - energyPerStorageCycle ) / energyPerSamplingCycle + 1 );
+	adaptive_slices = ceil( ( last_24h_avg() - energyPerStorageCycle ) / energyPerStorageCycle + 1 );
 
 	if ( adaptive_slices < 1 )
 		adaptive_slices = 1;
@@ -126,20 +128,20 @@ void WCMA::calculateAdaptiveSlices()
 	for ( int i = retainDays - 1; i >= 0; --i )
 	{
 		for ( size_t j = 0; j < energy_prediction_matrix[0].size(); ++j )
-			DriverInterface::debug.printFloat( energy_prediction_matrix[i][j], 2, false ),
+			DriverInterface::debug.printFloat( energy_prediction_matrix[i][j], 5, false ),
 			DriverInterface::debug.printLine( " ", false );
 		DriverInterface::debug.printLine( " ", true );
 	}
 
 	/* debug */
 	for ( unsigned int i = 0; i < day_index; ++i )
-		DriverInterface::debug.printLine( "    ", false );
+		DriverInterface::debug.printLine( "       ", false );
 	DriverInterface::debug.printLine( ".^. current day index", true );
 
 	/* debug */
 	DriverInterface::debug.printLine( "current_day_samples: ", true );
 	for ( size_t i = 0; i < energy_prediction_matrix[0].size(); ++i )
-		DriverInterface::debug.printFloat( current_day_samples[i], 2, false ),
+		DriverInterface::debug.printFloat( current_day_samples[i], 5, false ),
 		DriverInterface::debug.printLine( " ", false );
 	DriverInterface::debug.printLine( "\n", true );
 
@@ -159,11 +161,14 @@ void WCMA::calculateAdaptiveSlices()
 #endif
 
 #ifdef DEBUG
+	DriverInterface::debug.printLine( "energy_current_slot: ", false );
+	DriverInterface::debug.printFloat( energy_current_slot, 5, true ),
+
 	DriverInterface::debug.printLine( "mean of past days: ", false );
-	DriverInterface::debug.printFloat( meanPastDays( day_index ), 2, true ),
+	DriverInterface::debug.printFloat( meanPastDays( day_index ), 5, true ),
 
 	DriverInterface::debug.printLine( "last_24h_avg: ", false );
-	DriverInterface::debug.printFloat( last_24h_avg(), 3, true );
+	DriverInterface::debug.printFloat( last_24h_avg(), 5, true );
 
 	DriverInterface::debug.printLine( "Next predicted value: ", false );
 	DriverInterface::debug.printFloat( next_pred, 5, true );
@@ -199,10 +204,34 @@ float WCMA::last_24h_avg() const
 	return current_day_samples.average();
 }
 
+
 void WCMA::reorder_prediction_matrix()
 {
 	for ( size_t i = retainDays - 1; i; --i )
 		energy_prediction_matrix[i] = energy_prediction_matrix[i - 1];
 
 	energy_prediction_matrix[0] = current_day_samples;
+}
+
+
+float WCMA::do_all_the_magic()
+{
+	if ( current_slice == adaptive_slices - 1 )
+	{
+		calculateAdaptiveSlices();
+		setDutyCycle();
+		current_slice = 0;
+
+		return energy_current_slot;
+	}
+	else
+	{
+		DriverInterface::debug.printLine( "current_slice: ", false );
+		DriverInterface::debug.printFloat( current_slice, 3, true );
+
+		++current_slice;
+		setDutyCycle();
+
+		return Algorithms::getLuminance();
+	}
 }
