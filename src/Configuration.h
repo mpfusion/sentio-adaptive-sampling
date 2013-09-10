@@ -20,6 +20,7 @@ struct Configuration
 {
 	static const unsigned int secondsPerDay = 86400;  ///< value in @f$ s @f$
 
+	static unsigned int minDutyCycle;  ///< value in @f$ s @f$
 	static unsigned int sleepTime;
 
 	/**

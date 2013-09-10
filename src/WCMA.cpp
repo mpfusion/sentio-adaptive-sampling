@@ -121,6 +121,8 @@ void WCMA::calculateAdaptiveSlices()
 	if ( adaptive_slices < 1 )
 		adaptive_slices = 1;
 
+	sleepTime = minDutyCycle / adaptive_slices;
+
 #ifdef DEBUG
 	DriverInterface::debug.printLine( "energy_prediction_matrix: ", true );
 

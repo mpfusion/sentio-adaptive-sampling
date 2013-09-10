@@ -100,10 +100,12 @@ bool Algorithms::_mainstate()
 
 	const float energy_current_slice = wcma.do_all_the_magic();
 
+#ifdef DEBUG
 	DriverInterface::debug.printLine( "energy_current_slice: ", false );
 	DriverInterface::debug.printFloat( energy_current_slice, 5, true );
+#endif
 
-	/* sendData( 42 ); */
+	sendData( 42 );
 	/* receiveData(); */
 
 #ifdef DEBUG
