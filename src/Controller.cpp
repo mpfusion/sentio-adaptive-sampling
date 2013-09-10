@@ -105,7 +105,8 @@ bool Controller::_mainstate()
 	debug.printLine( "Waiting for packets...", true );
 #endif
 
-	while ( true );
+	myStatusBlock.sleepMode   = 3;
+	myStatusBlock.wantToSleep = true;
 
 	return true;
 }
@@ -147,13 +148,12 @@ bool Controller::_radio_send()
 	/* cc1101.sendPacket( serial.type, serial.address, serial.payload, serial.payload_size ); */
 	cc1101.sendPacket( 1, 3, payload, 11 );
 
-	myStatusBlock.sleepMode   = 3;
+	myStatusBlock.nextState   = mainstate;
 	myStatusBlock.wantToSleep = true;
-
-	sentio.LED_ToggleGreen();
 
 	return true;
 }
+
 
 bool Controller::_radio_receive()
 {
@@ -161,7 +161,7 @@ bool Controller::_radio_receive()
 	debug.printLine( "Radio Receive State", true );
 #endif
 
-	sentio.LED_ToggleOrange();
+	sentio.LED_ToggleGreen();
 
 	cc1101.readPacket();
 
@@ -215,11 +215,12 @@ bool Controller::_radio_receive()
 		cc1101.setReceiveMode();
 	}
 
-	myStatusBlock.nextState   = radio_send;
+	myStatusBlock.nextState   = mainstate;
 	myStatusBlock.wantToSleep = false;
 
 	return true;
 }
+
 
 ERROR_CODE Controller::executeApplication()
 {
@@ -267,7 +268,8 @@ void Controller::_EVEN_GPIO_InterruptHandler( uint32_t )
 {
 	sentio.LED_ToggleOrange();
 
-	myStatusBlock.nextState = radio_receive;
+	myStatusBlock.nextState   = radio_receive;
+	myStatusBlock.wantToSleep = false;
 
 	// Clear the flag
 	GPIO_IntClear( ~0 );
@@ -276,8 +278,6 @@ void Controller::_EVEN_GPIO_InterruptHandler( uint32_t )
 
 void Controller::_SERIAL_InterruptHandler( uint32_t data )
 {
-	sentio.LED_ToggleGreen();
-
 	if ( serial.digest( data ) )
 	{
 		myStatusBlock.nextState   = mainstate;
