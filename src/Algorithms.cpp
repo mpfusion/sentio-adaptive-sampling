@@ -6,6 +6,7 @@
  */
 
 #include "Algorithms.h"
+#include "payload_packet.h"
 #include "EWMA.h"
 #include "WCMA.h"
 
@@ -18,8 +19,6 @@ EWMA ewma;
 WCMA wcma;
 
 time Algorithms::baseTime( 0 );
-
-uint8_t payload[11];
 
 volatile bool     packetReceived = false;
 volatile uint16_t packetCount    = 0;
@@ -139,25 +138,18 @@ void Algorithms::sendData( float )
 	debug.printLine( "Sending data start", true );
 #endif
 
-	uint8_t PAYLOAD[18];
-
-	PAYLOAD[0]  = 'H';
-	PAYLOAD[1]  = 'e';
-	PAYLOAD[2]  = 'l';
-	PAYLOAD[3]  = 'l';
-	PAYLOAD[4]  = 'o';
-	PAYLOAD[5]  = ' ';
-	PAYLOAD[6]  = 'M';
-	PAYLOAD[7]  = 'a';
-	PAYLOAD[8]  = 'u';
-	PAYLOAD[9]  = 'd';
-	PAYLOAD[10] = 'e';
+	Packet::payload_packet.node_id         = _nodeID_algorithm;
+	Packet::payload_packet.temperature     = 12;
+	Packet::payload_packet.humidity        = 34;
+	Packet::payload_packet.adaptive_slices = 8;
+	Packet::payload_packet.sleep_time      = 2048;
+	Packet::payload_packet.battery_level   = 3.141;
 
 	cc1101.strobe( CC1101_SIDLE );
 	for ( volatile int i = 0; i < 4000; ++i );
 
 	const uint8_t packetType = 1;
-	cc1101.sendPacket( packetType, _nodeID_controller, PAYLOAD, sizeof( PAYLOAD ) );
+	cc1101.sendPacket( packetType, _nodeID_controller, Packet::payload, sizeof( Packet::payload ) );
 
 #ifdef DEBUG
 	debug.printLine( "Sending data finished", true );
@@ -213,9 +205,7 @@ void Algorithms::receiveData()
 	debug.printDecimal( cc1101.getPacketAddress() );
 	debug.printLine( " ", true );
 
-	cc1101.getPacketPayload( payload, 0, sizeof( payload ) - 1 );
-	/* debug.printLine( "Payload: ", false ); */
-	/* debug.printLine( reinterpret_cast<const char *>(payload), true ); */
+	cc1101.getPacketPayload( Packet::payload, 0, sizeof( Packet::payload ) - 1 );
 
 #ifdef DEBUG
 	debug.printLine( "Receiving data finished", true );
