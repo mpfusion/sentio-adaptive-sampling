@@ -149,12 +149,15 @@ void Algorithms::sendData()
 	debug.printLine( "Sending data start", true );
 #endif
 
+	float humidity, temperature;
+	humid.getMeasurement( humidity, temperature );
+
 	Packet::payload_packet.node_id         = _nodeID_algorithm;
-	Packet::payload_packet.temperature     = 12;
-	Packet::payload_packet.humidity        = 34;
-	Packet::payload_packet.adaptive_slices = 8;
-	Packet::payload_packet.sleep_time      = 2048;
-	Packet::payload_packet.battery_level   = 3.141;
+	Packet::payload_packet.temperature     = temperature;
+	Packet::payload_packet.humidity        = humidity;
+	Packet::payload_packet.adaptive_slices = wcma.adaptive_slices;
+	Packet::payload_packet.sleep_time      = Configuration::sleepTime;
+	Packet::payload_packet.battery_level   = getStorageVoltage();
 
 	cc1101.strobe( CC1101_SIDLE );
 	for ( volatile int i = 0; i < 4000; ++i );
