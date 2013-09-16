@@ -132,6 +132,17 @@ float Algorithms::getLuminance()
 }
 
 
+float Algorithms::getStorageVoltage()
+{
+	float storageVoltage, __, ___;
+
+	confeh.getMeasurements( storageVoltage, __, ___ );
+
+	// current super capacitor voltage in @f$ V @f$
+	return storageVoltage;
+}
+
+
 void Algorithms::sendData()
 {
 #ifdef DEBUG

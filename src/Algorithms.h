@@ -89,6 +89,13 @@ public:
 	 */
 	static float getLuminance();
 
+	/**
+	 * Obtain the super capacitor voltage.
+	 *
+	 * @return Voltage in @f$ V @f$.
+	 */
+	static float getStorageVoltage();
+
 	ERROR_CODE executeApplication();
 	uint8_t    setupApplication();
 	
