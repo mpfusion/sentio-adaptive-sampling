@@ -9,6 +9,7 @@
 
 unsigned int Configuration::sleepTime              = 10;
 unsigned int Configuration::minDutyCycle           = 1800;
+unsigned int Configuration::maxDutyCycle           = 300;
 float        Configuration::weightingFactor        = .5;
 float        Configuration::energyPerSamplingCycle = .0002;
 float        Configuration::energyPerStorageCycle  = .04;

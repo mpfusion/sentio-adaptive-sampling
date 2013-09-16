@@ -7,6 +7,8 @@
 
 #include "EWMA.h"
 
+int EWMA::adaptive_slices = 1;
+
 void EWMA::calculateAdaptiveSlices()
 {
 
@@ -21,11 +23,11 @@ void EWMA::calculateAdaptiveSlices()
 	const float expectedAveragePerDay  = historicalAverage.average();
 	const float expectedAveragePerSlot = expectedAveragePerDay / slotsPerDay;
 	
-	adaptiveSlices =
-		ceil( ( expectedAveragePerSlot - energyPerStorageCycle ) / energyPerSamplingCycle + 1 );
+	adaptive_slices =
+		ceil( ( expectedAveragePerSlot - energyPerStorageCycle ) / energyPerStorageCycle + 1 );
 
-	if ( adaptiveSlices < 1 )
-		adaptiveSlices = 1;
+	if ( adaptive_slices < 1 )
+		adaptive_slices = 1;
 
 	historicalAverage.push( newHistAvg );
 
@@ -39,17 +41,14 @@ void EWMA::calculateAdaptiveSlices()
 	DriverInterface::debug.printLine( "\tenergyPerStorageCycle:\t\t", false );
 	DriverInterface::debug.printFloat( energyPerStorageCycle, 7, true );
 
-	DriverInterface::debug.printLine( "\tenergyPerSamplingCycle:\t\t", false );
-	DriverInterface::debug.printFloat( energyPerSamplingCycle, 7, true );
-
 	DriverInterface::debug.printLine( "\tExpected average per day:\t", false );
 	DriverInterface::debug.printFloat( expectedAveragePerDay, 7, true );
 
 	DriverInterface::debug.printLine( "\tExpected average per slot:\t", false );
 	DriverInterface::debug.printFloat( expectedAveragePerSlot, 7, true );
 
-	DriverInterface::debug.printLine( "\tadaptiveSlices:\t\t\t", false );
-	DriverInterface::debug.printFloat( adaptiveSlices, 4, true );
+	DriverInterface::debug.printLine( "\tadaptive_slices:\t\t", false );
+	DriverInterface::debug.printFloat( adaptive_slices, 4, true );
 	DriverInterface::debug.printLine( "\n", false );
 #endif
 
@@ -62,7 +61,7 @@ void EWMA::initialize()
 
 void EWMA::setDutyCycle()
 {
-	Algorithms::config.sleepTime = minDutyCycle / adaptiveSlices;
+	Algorithms::config.sleepTime = minDutyCycle / adaptive_slices;
 
 	Algorithms::timer.setBaseTime( Algorithms::baseTime );
 	Algorithms::timer.setAlarmPeriod( Algorithms::config.sleepTime, alarm1, alarmMatchHour_Minutes_Seconds );

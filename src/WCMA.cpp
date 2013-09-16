@@ -7,7 +7,7 @@
 
 #include "WCMA.h"
 
-unsigned int WCMA::adaptive_slices = 1;
+int WCMA::adaptive_slices = 1;
 
 
 void WCMA::initialize()
@@ -218,7 +218,7 @@ void WCMA::reorder_prediction_matrix()
 
 float WCMA::do_all_the_magic()
 {
-	if ( current_slice == adaptive_slices - 1 )
+	if ( current_slice == static_cast<unsigned int>(adaptive_slices - 1) )
 	{
 		calculateAdaptiveSlices();
 		setDutyCycle();

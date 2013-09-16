@@ -38,7 +38,7 @@ public:
 	 * duty-cycle. It can not be smaller than one. One represents one slice
 	 * per slot.
 	 */
-	static unsigned int adaptive_slices;
+	static int adaptive_slices;
 
 
 	WCMA() {}

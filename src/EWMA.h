@@ -10,20 +10,12 @@
 
 #include <cmath>
 #include "Algorithms.h"
+#include "Configuration.h"
 #include "HistoricalAverage.h"
 
 
-class EWMA
+class EWMA : public Configuration
 {
-
-	const unsigned int   secondsPerDay;           ///< value in @f$ s @f$
-	const unsigned int   minDutyCycle;            ///< value in @f$ s @f$
-	const unsigned int   maxDutyCycle;            ///< value in @f$ s @f$
-	               float energyPerSamplingCycle;  ///< value in @f$ J @f$
-	               float energyPerStorageCycle;   ///< value in @f$ J @f$
-
-	float weightingFactor;
-
 	/**
 	 * Variable for setting the duty-cycle.
 	 *
@@ -31,21 +23,13 @@ class EWMA
 	 * duty-cycle. It can not be smaller than one. One represents one slice
 	 * per slot.
 	 */
-	unsigned int adaptiveSlices;
+	static int adaptive_slices;
 
 	HistoricalAverage <48, float> historicalAverage;
 
 public:
 
-	EWMA() :
-		secondsPerDay( 86400 ),
-		minDutyCycle( 1800 ),
-		maxDutyCycle( 300 ),
-		energyPerSamplingCycle( .0002 ),
-		energyPerStorageCycle( .00006 ),
-		weightingFactor( .5 ),
-		adaptiveSlices( 1 )
-		{}
+	EWMA() {}
 	
 	/**
 	 * Fills the historical average array.
