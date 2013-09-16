@@ -29,6 +29,8 @@ class WCMA : public Configuration
 
 	float energy_current_slot;
 
+public:
+
 	/**
 	 * Variable for setting the duty-cycle.
 	 *
@@ -38,7 +40,6 @@ class WCMA : public Configuration
 	 */
 	static unsigned int adaptive_slices;
 
-public:
 
 	WCMA() {}
 	
