@@ -104,7 +104,7 @@ bool Algorithms::_mainstate()
 	DriverInterface::debug.printFloat( energy_current_slice, 5, true );
 #endif
 
-	sendData( 42 );
+	sendData();
 	/* receiveData(); */
 
 #ifdef DEBUG
@@ -132,7 +132,7 @@ float Algorithms::getLuminance()
 }
 
 
-void Algorithms::sendData( float )
+void Algorithms::sendData()
 {
 #ifdef DEBUG
 	debug.printLine( "Sending data start", true );

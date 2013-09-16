@@ -64,10 +64,10 @@ private:
 	static time baseTime;  ///< controls the starting value of the timer
 
 	/**
-	 * Sends the data to a remote location via radio.
+	 * Sends the data packet to a remote location via radio.
 	 *
 	 */
-	static void sendData( float value );
+	static void sendData();
 	
 	static void receiveData();
 
