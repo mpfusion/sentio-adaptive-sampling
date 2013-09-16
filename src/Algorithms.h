@@ -64,10 +64,10 @@ private:
 	static time baseTime;  ///< controls the starting value of the timer
 
 	/**
-	 * Sends the data to a remote location via radio.
+	 * Sends the data packet to a remote location via radio.
 	 *
 	 */
-	static void sendData( float value );
+	static void sendData();
 	
 	static void receiveData();
 
@@ -88,6 +88,13 @@ public:
 	 * @return Luminance radiation in joule.
 	 */
 	static float getLuminance();
+
+	/**
+	 * Obtain the super capacitor voltage.
+	 *
+	 * @return Voltage in @f$ V @f$.
+	 */
+	static float getStorageVoltage();
 
 	ERROR_CODE executeApplication();
 	uint8_t    setupApplication();

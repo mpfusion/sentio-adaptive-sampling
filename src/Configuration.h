@@ -18,21 +18,48 @@
  */
 struct Configuration
 {
-	unsigned int sleepTime;
+	static const unsigned int secondsPerDay = 86400;  ///< value in @f$ s @f$
+
+	static unsigned int minDutyCycle;  ///< value in @f$ s @f$
+	static unsigned int sleepTime;
+
+	/**
+	 * Number of columns in the energy prediction matrix. This many samples
+	 * are stored for each day. This is the @f$ N @f$ value from the formulas.
+	 */
+	static const unsigned int slotsPerDay = 48;
+
+	static float weightingFactor;  ///< @f$ =\alpha @f$
+
+	/**
+	 * Number of rows in the energy prediction matrix. Samples for this many
+	 * days are retained and used for the prediction. This is the
+	 * @f$ D @f$ value from the formulas.
+	 */
+	static const unsigned int retainDays = 4;
+
+	/**
+	 * This many samples per day are used for the prediction. This is the
+	 * @f$ K @f$ value from the formulas.
+	 */
+	static const unsigned int retainSamples = 3;
+
+	static float energyPerSamplingCycle;  ///< value in @f$ J @f$
+	static float energyPerStorageCycle;   ///< value in @f$ J @f$
 
 	/**
 	 * An energy storage level lower than this treats the storage as empty.
 	 *
 	 * Value in @f$ V @f$
 	 */
-	const float energyStorageEmpty;
+	static const float energyStorageEmpty;
 	
 	/**
 	 * An energy storage level higher than this treats the storage as full.
 	 *
 	 * Value in @f$ V @f$
 	 */
-	const float energyStorageFull;
+	static const float energyStorageFull;
 
 	/**
 	 * Processes a configuration packet.
@@ -43,11 +70,7 @@ struct Configuration
 	 */
 	void updateConfiguration( uint8_t *configPacket );
 
-	Configuration() :
-		sleepTime( 10 ),
-		energyStorageEmpty( 1.0 ),
-		energyStorageFull( 2.5 )
-	{}
+	Configuration() {}
 };
 
 #endif /* end of include guard: CONFIGURATION_H_THZVIP5A */

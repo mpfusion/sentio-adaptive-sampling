@@ -6,7 +6,9 @@
  */
 
 #include "Algorithms.h"
+#include "payload_packet.h"
 #include "EWMA.h"
+#include "WCMA.h"
 
 STATUS_BLOCK     Algorithms::myStatusBlock;
 INTERRUPT_CONFIG Algorithms::rtcInterruptConfig;
@@ -14,10 +16,9 @@ INTERRUPT_CONFIG Algorithms::rtcInterruptConfig;
 Configuration Algorithms::config;
 
 EWMA ewma;
+WCMA wcma;
 
 time Algorithms::baseTime( 0 );
-
-uint8_t payload[11];
 
 volatile bool     packetReceived = false;
 volatile uint16_t packetCount    = 0;
@@ -74,6 +75,7 @@ bool Algorithms::_initialState()
 	cc1101.setAddress( _nodeID_algorithm );
 
 	ewma.initialize();
+	wcma.initialize();
 
 #ifdef DEBUG
 	debug.printLine( "\n", true );
@@ -95,10 +97,14 @@ bool Algorithms::_mainstate()
 	debug.printLine( "In mainstate", true );
 #endif
 
-	ewma.calculateAdaptiveSlices();
-	ewma.setDutyCycle();
+	const float energy_current_slice = wcma.do_all_the_magic();
 
-	/* sendData( 42 ); */
+#ifdef DEBUG
+	DriverInterface::debug.printLine( "energy_current_slice: ", false );
+	DriverInterface::debug.printFloat( energy_current_slice, 5, true );
+#endif
+
+	sendData();
 	/* receiveData(); */
 
 #ifdef DEBUG
@@ -121,42 +127,43 @@ float Algorithms::getLuminance()
 
 	confeh.getMeasurements( _, __, solarCurrent );
 
-#ifdef DEBUG
-	debug.printLine( "\tsolarCurrent: ", false );
-	debug.printFloat( solarCurrent , 6, false );
-	debug.printLine( "\n", true );
-#endif
-
 	// current radiation energy in Joule
 	return solarCurrent / .05;
 }
 
 
-void Algorithms::sendData( float )
+float Algorithms::getStorageVoltage()
+{
+	float storageVoltage, __, ___;
+
+	confeh.getMeasurements( storageVoltage, __, ___ );
+
+	// current super capacitor voltage in @f$ V @f$
+	return storageVoltage;
+}
+
+
+void Algorithms::sendData()
 {
 #ifdef DEBUG
 	debug.printLine( "Sending data start", true );
 #endif
 
-	uint8_t PAYLOAD[18];
+	float humidity, temperature;
+	humid.getMeasurement( humidity, temperature );
 
-	PAYLOAD[0]  = 'H';
-	PAYLOAD[1]  = 'e';
-	PAYLOAD[2]  = 'l';
-	PAYLOAD[3]  = 'l';
-	PAYLOAD[4]  = 'o';
-	PAYLOAD[5]  = ' ';
-	PAYLOAD[6]  = 'M';
-	PAYLOAD[7]  = 'a';
-	PAYLOAD[8]  = 'u';
-	PAYLOAD[9]  = 'd';
-	PAYLOAD[10] = 'e';
+	Packet::payload_packet.node_id         = _nodeID_algorithm;
+	Packet::payload_packet.temperature     = temperature;
+	Packet::payload_packet.humidity        = humidity;
+	Packet::payload_packet.adaptive_slices = wcma.adaptive_slices;
+	Packet::payload_packet.sleep_time      = Configuration::sleepTime;
+	Packet::payload_packet.battery_level   = getStorageVoltage();
 
 	cc1101.strobe( CC1101_SIDLE );
 	for ( volatile int i = 0; i < 4000; ++i );
 
 	const uint8_t packetType = 1;
-	cc1101.sendPacket( packetType, _nodeID_controller, PAYLOAD, sizeof( PAYLOAD ) );
+	cc1101.sendPacket( packetType, _nodeID_controller, Packet::payload, sizeof( Packet::payload ) );
 
 #ifdef DEBUG
 	debug.printLine( "Sending data finished", true );
@@ -212,9 +219,7 @@ void Algorithms::receiveData()
 	debug.printDecimal( cc1101.getPacketAddress() );
 	debug.printLine( " ", true );
 
-	cc1101.getPacketPayload( payload, 0, sizeof( payload ) - 1 );
-	/* debug.printLine( "Payload: ", false ); */
-	/* debug.printLine( reinterpret_cast<const char *>(payload), true ); */
+	cc1101.getPacketPayload( Packet::payload, 0, sizeof( Packet::payload ) - 1 );
 
 #ifdef DEBUG
 	debug.printLine( "Receiving data finished", true );

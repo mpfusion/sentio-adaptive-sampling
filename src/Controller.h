@@ -107,9 +107,9 @@ private:
 	/**
 	 * Interrupt handlers used for changing states after wakeup.
 	 *
-	 * @param This integer serves as a bit array and represents the GPIO ports
-	 * that can throw an interrupt. The exact port can be determined when a
-	 * bit mask is checked against this variable.
+	 * @param temp This integer serves as a bit array and represents the GPIO
+	 * ports that can throw an interrupt. The exact port can be determined
+	 * when a bit mask is checked against this variable.
 	 */
 	static void _ODD_GPIO_InterruptHandler( uint32_t temp );
 	static void _EVEN_GPIO_InterruptHandler( uint32_t temp );

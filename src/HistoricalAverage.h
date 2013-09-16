@@ -43,7 +43,7 @@ public:
 	 *
 	 * All elements of the array are initialised with the value provided.
 	 *
-	 * @param The value used for initialisation.
+	 * @param t The value used for initialisation.
 	 */
 	void fill( const T& t )
 	{
