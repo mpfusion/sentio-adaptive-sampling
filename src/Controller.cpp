@@ -69,9 +69,9 @@ bool Controller::_initialize()
 	timer.resetInterrupts();
 	timer.setLowPowerMode();
 
-#ifdef DEBUG
-	debug.printLine( "CC1101 Transmitter and serial receiver", true );
-#endif
+/* #ifdef DEBUG */
+/* 	debug.printLine( "CC1101 Transmitter and serial receiver", true ); */
+/* #endif */
 
 	cc1101.initializeInterface();
 	cc1101.initializeRadioInterrupt0( false, true );
@@ -87,9 +87,9 @@ bool Controller::_initialize()
 
 	cc1101.setReceiveMode();
 
-#ifdef DEBUG
-	debug.printLine( "Initialization complete", true );
-#endif
+/* #ifdef DEBUG */
+/* 	debug.printLine( "Initialization complete", true ); */
+/* #endif */
 
 	myStatusBlock.nextState = mainstate;
 
@@ -99,10 +99,10 @@ bool Controller::_initialize()
 
 bool Controller::_mainstate()
 {
-#ifdef DEBUG
-	debug.printLine( "Main State", true );
-	debug.printLine( "Waiting for packets...", true );
-#endif
+/* #ifdef DEBUG */
+/* 	debug.printLine( "Main State", true ); */
+/* 	debug.printLine( "Waiting for packets...", true ); */
+/* #endif */
 
 	myStatusBlock.sleepMode   = 3;
 	myStatusBlock.wantToSleep = true;
@@ -156,9 +156,9 @@ bool Controller::_radio_send()
 
 bool Controller::_radio_receive()
 {
-#ifdef DEBUG
-	debug.printLine( "Radio Receive State", true );
-#endif
+/* #ifdef DEBUG */
+/* 	debug.printLine( "Radio Receive State", true ); */
+/* #endif */
 
 	sentio.LED_ToggleGreen();
 
@@ -171,58 +171,65 @@ bool Controller::_radio_receive()
 		else
 			packetCount = 1;
 
-		debug.printLine( "Packet number: ", false );
-		debug.printDecimal( packetCount );
-		debug.printLine( " ", true );
+		/* debug.printLine( "Packet number: ", false ); */
+		/* debug.printDecimal( packetCount ); */
+		/* debug.printLine( " ", true ); */
 
-		debug.printLine( "Packet Length: ", false );
-		debug.printDecimal( cc1101.getPacketLength() );
-		debug.printLine( " ", true );
+		/* debug.printLine( "Packet Length: ", false ); */
+		/* debug.printDecimal( cc1101.getPacketLength() ); */
+		/* debug.printLine( " ", true ); */
 
-		debug.printLine( "Payload Length: ", false );
-		debug.printDecimal( cc1101.getPacketLength() - 2 );
-		debug.printLine( " ", true );
+		/* debug.printLine( "Payload Length: ", false ); */
+		/* debug.printDecimal( cc1101.getPacketLength() - 2 ); */
+		/* debug.printLine( " ", true ); */
 
-		debug.printLine( "Node Address: ", false );
-		debug.printDecimal( cc1101.getAddress(), true );
+		/* debug.printLine( "Node Address: ", false ); */
+		/* debug.printDecimal( cc1101.getAddress(), true ); */
 
-		debug.printLine( "Packet Address: ", false );
-		debug.printDecimal( cc1101.getPacketAddress() );
-		debug.printLine( " ", true );
+		/* debug.printLine( "Packet Address: ", false ); */
+		/* debug.printDecimal( cc1101.getPacketAddress() ); */
+		/* debug.printLine( " ", true ); */
 
-		debug.printLine( "Type: ", false );
-		debug.printDecimal( cc1101.getPacketType() );
-		debug.printLine( " ", true );
+		/* debug.printLine( "Type: ", false ); */
+		/* debug.printDecimal( cc1101.getPacketType() ); */
+		/* debug.printLine( " ", true ); */
 
-		if ( cc1101.getCrcStatus() )
-			debug.printLine( "CRC ok", true );
-		else
-			debug.printLine( "CRC error", true );
+		/* if ( cc1101.getCrcStatus() ) */
+		/* 	debug.printLine( "CRC ok", true ); */
+		/* else */
+		/* 	debug.printLine( "CRC error", true ); */
 
-		debug.printLine( "RSSI: ", false );
-		debug.printFloat( cc1101.getRssiValue(), 5 );
-		debug.printLine( " ", true );
+		/* debug.printLine( "RSSI: ", false ); */
+		/* debug.printFloat( cc1101.getRssiValue(), 5 ); */
+		/* debug.printLine( " ", true ); */
 
-		debug.printLine( "LQI: ", false );
-		debug.printDecimal( cc1101.getLqiValue() );
-		debug.printLine( " ", true );
+		/* debug.printLine( "LQI: ", false ); */
+		/* debug.printDecimal( cc1101.getLqiValue() ); */
+		/* debug.printLine( " ", true ); */
 
 		// payload
-		debug.printLine( "Payload: ", false );
+		/* debug.printLine( "Payload: ", false ); */
 		cc1101.getPacketPayload( Packet::payload, 0, sizeof( Packet::payload ) - 1 );
 
-		debug.printLine( "Sender node ID: ", false );
-		debug.printFloat( Packet::payload_packet.node_id, 2, true );
-		debug.printLine( "Temperature: ", false );
-		debug.printFloat( Packet::payload_packet.temperature, 5, true );
-		debug.printLine( "Humidity: ", false );
-		debug.printFloat( Packet::payload_packet.humidity, 5, true );
-		debug.printLine( "adaptive_slices: ", false );
-		debug.printFloat( Packet::payload_packet.adaptive_slices, 5, true );
-		debug.printLine( "sleep_time: ", false );
-		debug.printFloat( Packet::payload_packet.sleep_time, 5, true );
-		debug.printLine( "battery_level: ", false );
-		debug.printFloat( Packet::payload_packet.battery_level, 5, true );
+		/* debug.printLine( "Sender node ID: ", false ); */
+		debug.printLine( ", ", false );
+		debug.printFloat( Packet::payload_packet.node_id, 2, false );
+		debug.printLine( ", ", false );
+		/* debug.printLine( "Temperature: ", false ); */
+		debug.printFloat( Packet::payload_packet.temperature, 5, false );
+		debug.printLine( ", ", false );
+		/* debug.printLine( "Humidity: ", false ); */
+		debug.printFloat( Packet::payload_packet.humidity, 5, false );
+		debug.printLine( ", ", false );
+		/* debug.printLine( "adaptive_slices: ", false ); */
+		debug.printFloat( Packet::payload_packet.adaptive_slices, 5, false );
+		debug.printLine( ", ", false );
+		/* debug.printLine( "sleep_time: ", false ); */
+		debug.printFloat( Packet::payload_packet.sleep_time, 5, false );
+		debug.printLine( ", ", false );
+		/* debug.printLine( "battery_level: ", false ); */
+		debug.printFloat( Packet::payload_packet.battery_level, 5, false );
+		debug.printLine( "\n", false );
 
 		cc1101.setReceiveMode();
 	}
