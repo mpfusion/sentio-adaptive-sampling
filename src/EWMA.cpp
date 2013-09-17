@@ -29,6 +29,8 @@ void EWMA::calculateAdaptiveSlices()
 	if ( adaptive_slices < 1 )
 		adaptive_slices = 1;
 
+	Algorithms::config.sleepTime = minDutyCycle / adaptive_slices;
+
 	historicalAverage.push( newHistAvg );
 
 #ifdef DEBUG
@@ -61,8 +63,6 @@ void EWMA::initialize()
 
 void EWMA::setDutyCycle()
 {
-	Algorithms::config.sleepTime = minDutyCycle / adaptive_slices;
-
 	Algorithms::timer.setBaseTime( Algorithms::baseTime );
 	Algorithms::timer.setAlarmPeriod( Algorithms::config.sleepTime, alarm1, alarmMatchHour_Minutes_Seconds );
 	Algorithms::timer.resetInterrupts();

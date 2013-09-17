@@ -97,12 +97,8 @@ bool Algorithms::_mainstate()
 	debug.printLine( "In mainstate", true );
 #endif
 
-	const float energy_current_slice = wcma.do_all_the_magic();
-
-#ifdef DEBUG
-	DriverInterface::debug.printLine( "energy_current_slice: ", false );
-	DriverInterface::debug.printFloat( energy_current_slice, 5, true );
-#endif
+	/* ewma.do_all_the_magic(); */
+	wcma.do_all_the_magic();
 
 	sendData();
 	/* receiveData(); */
