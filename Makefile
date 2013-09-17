@@ -2,8 +2,9 @@
 # Directories to be included                                       #
 ####################################################################
 
-PROJECTNAME      = Algorithms
 # PROJECTNAME      = Controller
+PROJECTNAME      = Algorithms
+ALGORITHM        = 2
 
 USERINCLUDEPATHS = src
 SYSTEMDIR        = system
@@ -29,7 +30,10 @@ USER_ASM_SRC =
 ####################################################################
 
 CPPFLAGS += \
-	-DDEBUG   \
+	-DDEBUG                  \
+	-DALGORITHM=$(ALGORITHM) \
+
+	# -D$(ALGORITHM) \
 
 CXXFLAGS += \
 	-std=c++98               \

@@ -97,8 +97,11 @@ bool Algorithms::_mainstate()
 	debug.printLine( "In mainstate", true );
 #endif
 
-	/* ewma.do_all_the_magic(); */
+#if ALGORITHM == 1
+	ewma.do_all_the_magic();
+#elif ALGORITHM == 2
 	wcma.do_all_the_magic();
+#endif
 
 	sendData();
 	/* receiveData(); */
