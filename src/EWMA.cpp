@@ -9,6 +9,7 @@
 
 int EWMA::adaptive_slices = 1;
 
+
 void EWMA::calculateAdaptiveSlices()
 {
 
@@ -16,12 +17,11 @@ void EWMA::calculateAdaptiveSlices()
 	DriverInterface::debug.printLine( "Entered: calculateAdaptiveSlices", true );
 #endif
 
-	const int   slotsPerDay            = secondsPerDay / minDutyCycle;
-	const float lum                    = Algorithms::getLuminance();
+	energy_current_slot                = Algorithms::getLuminance();
+
 	const float oldHistAvg             = historicalAverage.pop();
-	const float newHistAvg             = weightingFactor * oldHistAvg + ( 1 - weightingFactor ) * lum;
-	const float expectedAveragePerDay  = historicalAverage.average();
-	const float expectedAveragePerSlot = expectedAveragePerDay / slotsPerDay;
+	const float newHistAvg             = weightingFactor * oldHistAvg + ( 1 - weightingFactor ) * energy_current_slot;
+	const float expectedAveragePerSlot = historicalAverage.average();
 	
 	adaptive_slices =
 		ceil( ( expectedAveragePerSlot - energyPerStorageCycle ) / energyPerStorageCycle + 1 );
@@ -43,9 +43,6 @@ void EWMA::calculateAdaptiveSlices()
 	DriverInterface::debug.printLine( "\tenergyPerStorageCycle:\t\t", false );
 	DriverInterface::debug.printFloat( energyPerStorageCycle, 7, true );
 
-	DriverInterface::debug.printLine( "\tExpected average per day:\t", false );
-	DriverInterface::debug.printFloat( expectedAveragePerDay, 7, true );
-
 	DriverInterface::debug.printLine( "\tExpected average per slot:\t", false );
 	DriverInterface::debug.printFloat( expectedAveragePerSlot, 7, true );
 
@@ -56,10 +53,13 @@ void EWMA::calculateAdaptiveSlices()
 
 }
 
+
 void EWMA::initialize()
 {
 	historicalAverage.fill( Algorithms::getLuminance() );
+	current_slice = 0;
 }
+
 
 void EWMA::setDutyCycle()
 {
@@ -67,4 +67,27 @@ void EWMA::setDutyCycle()
 	Algorithms::timer.setAlarmPeriod( Algorithms::config.sleepTime, alarm1, alarmMatchHour_Minutes_Seconds );
 	Algorithms::timer.resetInterrupts();
 	Algorithms::timer.setLowPowerMode();
+}
+
+
+float EWMA::do_all_the_magic()
+{
+	if ( current_slice == static_cast<unsigned int>( adaptive_slices - 1 ) )
+	{
+		calculateAdaptiveSlices();
+		setDutyCycle();
+		current_slice = 0;
+
+		return energy_current_slot;
+	}
+	else
+	{
+		DriverInterface::debug.printLine( "current_slice: ", false );
+		DriverInterface::debug.printFloat( current_slice, 3, true );
+
+		++current_slice;
+		setDutyCycle();
+
+		return Algorithms::getLuminance();
+	}
 }

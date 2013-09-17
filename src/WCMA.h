@@ -128,6 +128,8 @@ public:
 	 * After 24 hours have been passed, the arrays in the energy prediction
 	 * matrix are shifted up by one index and the current day's array is
 	 * inserted to represent the last day's history.
+	 *
+	 * @return Energy measured in the current slice.
 	 */
 	float do_all_the_magic();
 

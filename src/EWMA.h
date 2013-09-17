@@ -25,6 +25,10 @@ class EWMA : public Configuration
 	 */
 	static int adaptive_slices;
 
+	unsigned int current_slice;
+
+	float energy_current_slot;
+
 	HistoricalAverage <48, float> historicalAverage;
 
 public:
@@ -49,7 +53,19 @@ public:
 	 */
 	void calculateAdaptiveSlices();
 	
+	/**
+	 * Set the sleep time
+	 */
 	void setDutyCycle();
+
+	/**
+	 * Executes calculateAdaptiveSlices() and setDutyCycle().
+	 *
+	 * Also implements the execution of the slices.
+	 *
+	 * @return Energy measured in the current slice.
+	 */
+	float do_all_the_magic();
 };
 
 #endif /* end of include guard: EWMA_H_PB1IR8OZ */
