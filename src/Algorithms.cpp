@@ -164,6 +164,9 @@ void Algorithms::sendData()
 	const uint8_t packetType = 1;
 	cc1101.sendPacket( packetType, _nodeID_controller, Packet::payload, sizeof( Packet::payload ) );
 
+	for ( volatile int i = 0; i < 65535; ++i );
+	cc1101.setSleepMode();
+
 #ifdef DEBUG
 	debug.printLine( "Sending data finished", true );
 #endif
@@ -187,7 +190,7 @@ void Algorithms::receiveData()
 		while ( !packetReceived );
 		packetReceived = false;
 		debug.printLine( "Packet received", true );
-		sentio.LED_ToggleOrange();
+		/* sentio.LED_ToggleOrange(); */
 		cc1101.readPacket();
 		debug.printLine( "Node Address: ", false );
 		debug.printDecimal( cc1101.getAddress(), true );
@@ -202,7 +205,7 @@ void Algorithms::receiveData()
 	
 	while ( !cc1101.getCrcStatus() || cc1101.getPacketAddress() != cc1101.getAddress() );
 
-	sentio.LED_ToggleGreen();
+	/* sentio.LED_ToggleGreen(); */
 	
 	debug.printLine( "Correct packet for this node received", true );
 
@@ -268,7 +271,7 @@ void Algorithms::_ODD_GPIO_InterruptHandler( uint32_t temp )
 void Algorithms::_EVEN_GPIO_InterruptHandler( uint32_t )
 {
 	packetReceived = true;
-	sentio.LED_ToggleRed();
+	/* sentio.LED_ToggleRed(); */
 
 	// Clear the flag
 	GPIO_IntClear( ~0 );
